@@ -107,7 +107,7 @@ Please make sure the path of file is correctly.
 
    Bowtie program http://bowtie-bio.sourceforge.net/index.shtml
 
-   rRNA sequences: We provided a :emphasis:`rRNA.fa` file in data folder of this package.
+   rRNA sequences: We provided a `rRNA.fa`_ file in data folder of this package.
 
    Example:
 
@@ -165,7 +165,7 @@ Please make sure the path of file is correctly.
       RiboCode -a <RiboCode_annot> -c <config.txt> -l no -o <RiboCode_ORFs_result>
       
 
-   Specify the information of the bam file and P-site parameters in config.txt, please refer to the example file in data folder.
+   Specify the information of the bam file and P-site parameters in `config.txt`_, please refer to the example file in data folder.
 
    **Explanation of final result files**
 
@@ -220,4 +220,5 @@ For any questions, please contact:
 
 .. _SRA_Toolkit: https://trace.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?view=software
 .. _HEK293 dataset: https://trace.ncbi.nlm.nih.gov/Traces/sra/?run=SRR1630831
-
+.. _config.txt: https://github.com/xzt41/RiboCode/blob/master/data/config.txt
+.. _rRNA.fa: https://github.com/xzt41/RiboCode/blob/master/data/rRNA.fa
