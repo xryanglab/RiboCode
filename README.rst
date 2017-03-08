@@ -34,13 +34,13 @@ popular ways:
 .. code-block:: bash
 
    pip install RiboCode
-   
+
 * Install from local:
 
 .. code-block:: bash
 
    pip install RiboCode-*.tar.gz
-   
+
 If you have not administrator permission, you need to install *RiboCode* locally in you own directory by adding the
 option ``--user`` to installation commands. Then, you need to add ``~/.local/bin/`` to the ``PATH`` variable, and
 ``~/.local/lib/`` to the ``PYTHONPATH`` variable. For example, if you are using the bash shell, you would do this by adding
@@ -115,7 +115,7 @@ Please make sure the path of file is correctly.
 
       bowtie-build <rRNA.fa> rRNA
       bowtie -p 8 -norc --un un_aligned.fastq rRNA -q <SRR1630831.fastq> <HEK293_rRNA.align>
-      
+
 4. **Aligning the clean reads to reference genome**
 
    Using STAR program: https://github.com/alexdobin/STAR
@@ -128,7 +128,7 @@ Please make sure the path of file is correctly.
 
       STAR --runThreadN 8 --runMode genomeGenerate --genomeDir <hg19_STARindex>
       --genomeFastaFiles <hg19_genome.fa> --sjdbGTFfile <gencode.v19.annotation.gtf>
-      
+
    (2). Alignment:
 
    .. code-block:: bash
@@ -137,7 +137,7 @@ Please make sure the path of file is correctly.
       --readFilesIn <un_aligned.fastq>  --outFileNamePrefix (HEK293) --outSAMtype BAM
       SortedByCoordinate --quantMode TranscriptomeSAM GeneCounts --outFilterMultimapNmax 1
       --outFilterMatchNmin 16
-      
+
 5. **Running *RiboCode* to identify translated ORFs**
 
    (1). Preparing the transcripts annotation files:
@@ -145,13 +145,13 @@ Please make sure the path of file is correctly.
    .. code-block:: bash
 
       prepare_transcripts -g <gencode.v19.annotation.gtf> -f <hg19_genome.fa> -o <RiboCode_annot>
-      
+
    (2). Selecting the length range of the RPF reads and identify the P-site locations:
 
    .. code-block:: bash
 
       metaplots -a <RiboCode_annot> -r <HEK293Aligned.toTranscriptome.out.bam>
-      
+
 
    This step will generate a PDF file, which plots the aggregate profiles of the distance between the 5'-end of reads
    and the annotated start codons or stop codons.
@@ -163,7 +163,7 @@ Please make sure the path of file is correctly.
    .. code-block:: bash
 
       RiboCode -a <RiboCode_annot> -c <config.txt> -l no -o <RiboCode_ORFs_result>
-      
+
 
    Specify the information of the bam file and P-site parameters in `config.txt`_, please refer to the example file in data folder.
 
@@ -216,7 +216,7 @@ For any questions, please contact:
 
    Rongyao Huang (THUhry12@163.com)
 
-   Xudong Xin (xudonxing_bioinf@sina.com)
+   Xudong Xing (xudonxing_bioinf@sina.com)
 
 .. _SRA_Toolkit: https://trace.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?view=software
 .. _HEK293 dataset: https://trace.ncbi.nlm.nih.gov/Traces/sra/?run=SRR1630831

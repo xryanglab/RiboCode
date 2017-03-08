@@ -46,9 +46,9 @@ def parsing_metaplots():
 	                    default="yes",help="whether the data is strand-specific, \
 	                    reverse means reversed strand interpretation.")
 	parser.add_argument("-m","--minimum-length",dest="minLength",required=False,type=int,default=24,
-	                    help="minimum read length for analysis")
+	                    help="minimum read length for analysis, default 24")
 	parser.add_argument("-M","--maximum-length",dest="maxLength",required=False,type=int,default=35,
-	                    help="maximum read length for analysis")
+	                    help="maximum read length for analysis, default 35")
 	parser.add_argument("-o","--outname",dest="outname",required=False,type=str,default="metaplots",
 	                    help="name of output pdf file(default: metaplots)")
 	args = parser.parse_args()

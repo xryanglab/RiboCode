@@ -38,7 +38,7 @@ def wilcoxon_greater(x, y, zero_method ="wilcox", correction = False):
 		if len(x) != len(y):
 			raise ValueError('Unequal N in wilcoxon.  Aborting.')
 		d = x - y
-		d[(x+y!=0) & d==0] = -1
+		d[(d==0) & (x+y!=0)]=-1
 
 
 	if zero_method == "wilcox":
