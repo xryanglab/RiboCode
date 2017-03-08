@@ -1,0 +1,7 @@
+# build file
+build/
+dist/
+RiboCode.egg-info
+RiboCode/*.pyc
+
+
