@@ -43,7 +43,7 @@ setup(
 
     # The project's main homepage.
     #TODO fix url 
-    url='https://homepage.homepage',
+    url='https://github.com/xzt41/RiboCode',
 
     # Author details
     author='Zhengtao Xiao',
