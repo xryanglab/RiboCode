@@ -78,9 +78,9 @@ def plot_main(cds_start,cds_end,psites_array,orf_tstart,orf_tstop,outname):
 	plt.savefig(outname + ".pdf")
 
 def main():
-	from parsing_opts import plot_orf_density
+	from parsing_opts import parsing_plot_orf_density
 	from loadconfig import LoadConfig
-	args = plot_orf_density()
+	args = parsing_plot_orf_density()
 	transcripts_cds_file = os.path.join(args.annot_dir,"transcripts_cds.txt")
 	cds_start = None
 	cds_end = None

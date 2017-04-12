@@ -20,8 +20,8 @@ def parsing_transcript():
 	if not os.path.exists(args.out_dir):
 		try:
 			os.mkdir(args.out_dir)
-		except OSError,e:
-			raise OSError(e)
+		except OSError as e:
+			raise e
 
 	if not os.path.exists(args.gtfFile):
 		raise ValueError("Error, gtf file not found:%s.\n" % args.gtfFile)
@@ -49,6 +49,12 @@ def parsing_metaplots():
 	                    help="minimum read length for analysis, default 24")
 	parser.add_argument("-M","--maximum-length",dest="maxLength",required=False,type=int,default=35,
 	                    help="maximum read length for analysis, default 35")
+	parser.add_argument("-pv1","--pvalue1_cutoff",dest="pvalue1_cutoff",required=False,type=float,default=0.001,
+	                    help="pvalue cutoff of frame0 > frame2 for predicting p-site location, default 0.001")
+	parser.add_argument("-pv2","--pvalue2_cutoff",dest="pvalue2_cutoff",required=False,type=float,default=0.001,
+	                    help="pvalue cutoff of frame0 > frame2 for predicting p-site location, default 0.001")
+	parser.add_argument("-f0_percent","--frame0_percent",dest="frame0_percent",required=False,type=float,default=0.6,
+	                    help="percentage of frame0 within frame0,1,2, default 0.6")
 	parser.add_argument("-o","--outname",dest="outname",required=False,type=str,default="metaplots",
 	                    help="name of output pdf file(default: metaplots)")
 	args = parser.parse_args()
@@ -63,6 +69,10 @@ def parsing_metaplots():
 	if not os.path.exists(args.ribo_bam):
 		raise  ValueError("Error, the bam file not found: %s\n" % args.ribo_bam)
 	args.stranded = True if args.stranded == "yes" else False
+	args.pvalue1_cutoff = float(args.pvalue1_cutoff)
+	args.pvalue2_cutoff = float(args.pvalue2_cutoff)
+	args.frame0_percent = float(args.frame0_percent)
+
 	return args
 
 def parsing_ribo():
@@ -103,7 +113,7 @@ def parsing_ribo():
 
 	return args
 
-def plot_orf_density():
+def parsing_plot_orf_density():
 	parser = argparse.ArgumentParser(
 		description="This script is designed for plot the P-site profile of specified ORF."
 	)

@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+from __future__ import division
 # -*- coding:UTF-8 -*-
 __author__ = 'Zhengtao Xiao'
 
@@ -8,6 +9,7 @@ import numpy as np
 import pysam
 from matplotlib.backends.backend_pdf import PdfPages
 from prepare_transcripts import *
+from detectORF import extract_frame,test_frame
 import os
 import sys
 
@@ -35,7 +37,7 @@ def filter_transcript(gene_dict,transcript_dict):
 								select_tid = tid
 						else:
 							select_tid = tid
-		else:
+		elif gobj.transcripts:
 			# if only transcript level1
 			levels = set([transcript_dict[tid].attr.get("level",None) for tid in gobj.transcripts])
 			if len(levels) > 1:
@@ -96,7 +98,7 @@ def readTranscriptBam(bamFile,filter_tids,transcript_dict,stranded,minLength,max
 	return (distance_to_start_count,distance_to_stop_count,length_counter)
 
 
-def distancePlot(distance_to_start_count,distance_to_stop_count,length_counter,outname):
+def distancePlot(distance_to_start_count,distance_to_stop_count,pre_psite_dict,length_counter,outname):
 	length_set = set(distance_to_start_count.keys() + distance_to_stop_count.keys())
 	total_reads = sum(length_counter.values())
 	with PdfPages(outname + ".pdf") as pdf:
@@ -104,13 +106,17 @@ def distancePlot(distance_to_start_count,distance_to_stop_count,length_counter,o
 		colors = np.tile(["b","g","r"], 34)
 		for l in sorted(length_set):
 			#plt.figure(figsize=(5,3))
+			if l not in pre_psite_dict:
+				xticks = [-40,-20,0,20,40]
+			else:
+				xticks = sorted([-40,-20,0,20,40] + pre_psite_dict[l] -50)
 			perct = '{:.2%}'.format(float(length_counter[l]) / total_reads)
 			fig,(ax1,ax2) = plt.subplots(nrows=2,ncols=1)
 			y1 = distance_to_start_count[l]
 			y2 = distance_to_stop_count[l]
 			ax1.vlines(x,ymin=np.zeros(101),ymax=y1,colors=colors[:-1])
 			ax1.tick_params(axis='x',which="both",top="off",direction='out')
-			ax1.set_xticks([-40,-20,-12,0,20,40])
+			ax1.set_xticks(xticks)
 			ax1.set_xlim((-50,50))
 			ax1.set_xlabel("Distance (nt)")
 			ax1.set_ylabel("Alignments")
@@ -119,7 +125,7 @@ def distancePlot(distance_to_start_count,distance_to_stop_count,length_counter,o
 
 			ax2.vlines(x,ymin=np.zeros(101),ymax=y2,colors=colors[:-1])
 			ax2.tick_params(axis='x',which="both",top="off",direction='out')
-			ax2.set_xticks([-40,-20,-12,0,20,40])
+			ax2.set_xticks(xticks)
 			ax2.set_xlim((-50,50))
 			ax2.set_xlabel("Distance (nt)")
 			ax2.set_ylabel("Alignments")
@@ -145,8 +151,6 @@ def _write_to_file(distance_dict,filename):
 		for k,v in distance_dict.iteritems():
 			fout.write("%i:\t%s\n" % (k,"\t".join(map(str,v))))
 
-
-
 def main():
 	import parsing_opts
 	args = parsing_opts.parsing_metaplots()
@@ -157,7 +161,37 @@ def main():
 	# read bam file
 	distance_to_start_count,distance_to_stop_count,length_counter = readTranscriptBam(
 		args.ribo_bam,filter_tids,transcript_dict,args.stranded,args.minLength,args.maxLength)
-	distancePlot(distance_to_start_count,distance_to_stop_count,length_counter,args.outname)
+	# predefine the psite
+	pre_psite_dict = {}
+	total_reads = sum(length_counter.values())
+	fout = open(args.outname + "_pre_config.txt", "w")
+	fout.write("# length\tpercentage\tpre_psite\tnum_of_codons\tf0_sum\tf1_sum\t_f2_sum\tf0_percent\tpvalue1\tpvalue2\tpvalue_combined\n")
+	for l,d in distance_to_start_count.iteritems():
+		if d.sum() < 10:
+			continue
+		pre_psite = d[:50].argmax()
+		f0,f1,f2 = extract_frame(d[pre_psite:])
+		if f0.sum() < 10:
+			continue
+		pv1,pv2,pv = test_frame(f0, f1, f2)
+		f0_percent = f0.sum() / (f0.sum() + f1.sum() + f2.sum())
+		if f0_percent < args.frame0_percent:
+			continue
+		if (pv1.pvalue < args.pvalue1_cutoff) and (pv2.pvalue <  args.pvalue2_cutoff):
+			pre_psite_dict[l] = pre_psite
+			read_percent = '{:.2%}'.format(float(length_counter[l]) / total_reads)
+			num_of_codons = len(f0)
+			fout.write("# " + "\t".join(map(str,[l,read_percent,-pre_psite+50,num_of_codons,f0.sum(),f1.sum(),f2.sum(),
+			                                     '{:.2%}'.format(f0_percent),pv1.pvalue,pv2.pvalue,pv])) + "\n")
+	#print the psite lines
+	fout.write("\n")
+	fout.write("# " + "\t".join(["SampleName","AlignmentFile","Stranded(yes/reverse)","P-siteReadLength","P-siteLocations"]) + "\n")
+	stranded = "yes" if args.stranded is True else "reverse"
+	pre_psite_len = map(str,sorted(pre_psite_dict.keys()))
+	pre_psite_loc = map(str,[-pre_psite_dict[i]+50 for i in sorted(pre_psite_dict.keys())])
+	fout.write("\t".join(map(str,["SampleName",args.ribo_bam,stranded,",".join(pre_psite_len),",".join(pre_psite_loc)])) + "\n")
+	fout.close()
+	distancePlot(distance_to_start_count,distance_to_stop_count,pre_psite_dict,length_counter,args.outname)
 	#lengthDistribution(length_counter,args.outname)
 
 if __name__ == "__main__":
