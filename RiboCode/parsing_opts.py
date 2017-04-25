@@ -90,7 +90,7 @@ def parsing_ribo():
 	                    help="Default: yes, the region from most distal AUG to stop was defined as an ORF. \
 	                          no, judge by program.", type=str)
 	parser.add_argument("-p","--pval-cutoff",dest="pval_cutoff",default=0.01,required=False,
-	                    help="P-value cutoff for ORF filtering.", type=float)
+	                    help="P-value cutoff for ORF filtering, default 0.01", type=float)
 	parser.add_argument("-s","--start_codon",default="ATG",type=str,dest="start_codon",
 	                    help="The canonical start codon. default: ATG")
 	parser.add_argument("-A","--alt_start_codons",default="",type=str,dest="alternative_start_codons",
@@ -101,7 +101,7 @@ def parsing_ribo():
 	                    help="ORF translation table(Default: 1). Assign the correct genetic code based on your organism, \
 	                    [please refer: https://www.ncbi.nlm.nih.gov/Taxonomy/Utils/wprintgc.cgi]")
 	parser.add_argument("-m","--min-AA-length",dest="min_AA_length",default="20",required=False,
-	                    help="The minimal length of predicted peptides", type=int)
+	                    help="The minimal length of predicted peptides,default 20", type=int)
 	parser.add_argument("-o","--output-file",dest="output_file",default="final_result",required=False,
 	                    help="output file name, default: final_result", type=str)
 
