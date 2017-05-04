@@ -26,8 +26,7 @@ Dependencies:
 Installation
 ------------
 
-*RiboCode* can be installed like any other Python packages. Here are some
-popular ways:
+*RiboCode* can be installed like any other Python packages. Here are some popular ways:
 
 * Install from PyPI:
 
@@ -209,6 +208,21 @@ Please make sure the path of file is correctly.
       parsing_plot_orf_density -a <RiboCode_annot> -c <config.txt> -t (transcript_id)
       -s (ORF_gstart) -e (ORF_gstop)
 
+   The generated PDF plots can be edited by Adobe Illustrator.
+
+Recipes (FAQ):
+--------------
+1. **I have a BAM/SAM file aligned to genome, how do I convert it to transcriptome-based mapping file ?**
+
+   You can use STAR aligner to generate the transcriptome-based alignment file by specifying the "--quantMode TranscriptomeSAM" parameters,
+   or use the "sam-xlate" command from `UNC Bioinformatics Utilities`_ .
+
+2. **How to use multiple BAM/SAM files to identify ORFs?**
+
+   You can select the read lengths which show strong 3-nt periodicity and the corresponding P-site locations for each
+   BAM/SAM file, then list each file and their information in `config.txt`_ file. *RiboCode* will combine the P-site
+   densities at each nucleotides of these BAM/SAM files together to predict ORFs.
+
 
 For any questions, please contact:
 ----------------------------------
@@ -223,3 +237,4 @@ For any questions, please contact:
 .. _HEK293 dataset: https://trace.ncbi.nlm.nih.gov/Traces/sra/?run=SRR1630831
 .. _config.txt: https://github.com/xzt41/RiboCode/blob/master/data/config.txt
 .. _rRNA.fa: https://github.com/xzt41/RiboCode/blob/master/data/rRNA.fa
+.. _UNC Bioinformatics Utilities: https://github.com/mozack/ubu

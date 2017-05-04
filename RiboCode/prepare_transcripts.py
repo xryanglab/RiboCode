@@ -155,7 +155,7 @@ class Transcript:
 		elif feature == "stop_codon":
 			self.genomic_stopcodon.append(iv)
 		else:
-			raise ValueError("Error: please GTF file, the feature is not recognized: %s" % feature)
+			raise ValueError("Error: the feature is not recognized: %s" % feature)
 
 	def __str__(self):
 		return "TranscriptID:%s;TranscriptType:%s" % (self.transcript_id,self.transcript_type)
@@ -181,6 +181,8 @@ def readGTF(filename):
 				transcript_dict[tobj.transcript_id] = tobj
 			elif field_dict["feature"] in ["exon","CDS","start_codon","stop_codon"]:
 				tid = field_dict["attr"]["transcript_id"]
+				if tid not in transcript_dict:
+					raise ParsingError("The annotation in GTF file should be three-level hierarchy of gene => transcript => exon (or CDS)")
 				transcript_dict[tid].add_feature(field_dict)
 			else:
 				pass
@@ -212,7 +214,7 @@ def genomic_iv_transform(genomic_exons_sorted, genomic_ivs_sorted):
 	"""
 	transform the genomic interval (of cds, start and stop codons) to inner coordinate in transcript,
 	transcript_exons must be sorted
-
+	return 0-based iv
 	"""
 
 	length = 0
@@ -231,15 +233,17 @@ def genomic_iv_transform(genomic_exons_sorted, genomic_ivs_sorted):
 		raise ValueError("\tCan't transform the genomic interval, please check!")
 	return innerIV
 
-def transcript_iv_transform(tobj,transcript_pos):
+def transcript_pos_transform(tobj, transcript_pos):
 	"""
-	transform the transcript interval to genomic position
+	transform the transcript position to genomic position
+	0-based
+	if strand is "-", return position of strand.
 	"""
 	length = 0
 	strand = tobj.genomic_iv.strand
 	genomic_pos = -1
 	for i in tobj.genomic_exons:
-		if transcript_pos <= length + i.length:
+		if transcript_pos < length + i.length:
 			if strand == "+":
 				genomic_pos = transcript_pos - length + i.start
 			else:
@@ -247,6 +251,41 @@ def transcript_iv_transform(tobj,transcript_pos):
 			break
 		length += i.length
 	return genomic_pos
+
+def transcript_iv_transform(tobj, transcript_iv):
+	"""
+	transform the transcript interval to genomic interval, zero-based.
+	"""
+	strand = tobj.genomic_iv.strand
+	genomic_start = transcript_pos_transform(tobj,transcript_iv.start)
+	genomic_end = transcript_pos_transform(tobj,transcript_iv.end-1)
+	if strand == "+":
+		genomic_end += 1
+	else:
+		genomic_end -= 1
+	exons_bound = [genomic_start]
+
+
+	for i in tobj.genomic_exons:
+		if strand == "+":
+			if genomic_start < i.start < genomic_end:
+				exons_bound.append(i.start)
+			if genomic_start < i.end < genomic_end:
+				exons_bound.append(i.end)
+		else:
+			if genomic_end < i.start_d < genomic_start:
+				exons_bound.append(i.start_d)
+			if genomic_end < i.end_d < genomic_start:
+				exons_bound.append(i.end_d)
+
+	exons_bound.append(genomic_end)
+	if len(exons_bound) % 2 != 0:
+		print "error when transform the transcript interval to genomic!"
+	exons_ivs = []
+	for i in range(0,len(exons_bound),2):
+		exons_ivs.append(Interval_from_directional(exons_bound[i],exons_bound[i+1],strand))
+
+	return exons_ivs
 
 def load_transcripts_pickle(pickle_file):
 	if os.path.exists(pickle_file):
@@ -296,7 +335,7 @@ def processTranscripts(genomeFasta,gtfFile,out_dir):
 					sys.stderr.write("Warning: the CDS is discontinuous," +
 					                  "only first region is used, %s\n" % tobj.transcript_id)
 				tobj.cds = tobj.cds[0]
-				transcript_cds_file.write("%s\t%i\t%i\n" % (tobj.transcript_id,tobj.cds.start,tobj.cds.end + 3))
+				transcript_cds_file.write("%s\t%i\t%i\n" % (tobj.transcript_id,tobj.cds.start +1,tobj.cds.end + 3))
 
 			# start and stop codon
 			if tobj.genomic_startcodon:
