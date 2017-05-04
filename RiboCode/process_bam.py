@@ -28,7 +28,7 @@ def load_psites(filename):
 
 def read_bam(configData):
 	"""
-	read RPF bam file, calculate psites reads and reads number
+	read RPF bam file, statistic the P-sites number.
 	"""
 	name = configData["samplename"]
 	bamFile = configData["filepath"]
@@ -51,7 +51,7 @@ def read_bam(configData):
 		tracks = pysam.AlignmentFile(bamFile)
 		if tid not in tracks.references:
 			sys.stderr.write("Error, the references in bam is different from transcriptome annotation, \n" +
-			                 "you should input the transcriptome BAM file.")
+			                 "you should input the transcriptome BAM/SAM file.")
 			sys.exit()
 
 		for r in tracks.fetch(until_eof=True):

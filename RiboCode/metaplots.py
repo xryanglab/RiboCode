@@ -165,7 +165,7 @@ def main():
 	pre_psite_dict = {}
 	total_reads = sum(length_counter.values())
 	fout = open(args.outname + "_pre_config.txt", "w")
-	fout.write("# length\tpercentage\tpre_psite\tnum_of_codons\tf0_sum\tf1_sum\t_f2_sum\tf0_percent\tpvalue1\tpvalue2\tpvalue_combined\n")
+	fout.write("#read_length\tproportion\tpredicted_psite\tnumber_of_codons_chosen\tf0_sum\tf1_sum\t_f2_sum\tf0_percent\tpvalue1\tpvalue2\tpvalue_combined\n")
 	for l,d in distance_to_start_count.iteritems():
 		if d.sum() < 10:
 			continue

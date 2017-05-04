@@ -86,8 +86,8 @@ def main():
 	cds_end = None
 	with open(transcripts_cds_file) as fin:
 		for line in fin:
-			t,s,e = line.strip().split("\t")
-			if t == args.transcript_id:
+			if line.startswith(args.transcript_id):
+				_,s,e = line.strip().split("\t")
 				cds_start = int(s)
 				cds_end = int(e)
 				break

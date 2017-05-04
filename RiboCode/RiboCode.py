@@ -47,8 +47,15 @@ def main():
 		ALTERNATIVE_START_CODON_LIST = None
 	if args.stop_codon:
 		STOP_CODON_LIST = args.stop_codon.strip().split(",")
-	detectORF.orf_detect(gene_dict,transcript_dict,args.annot_dir,tpsites_sum,total_psites_number,args.pval_cutoff,
-	                     longest_orf,START_CODON,ALTERNATIVE_START_CODON_LIST,STOP_CODON_LIST,args.min_AA_length,
-	                     args.output_file)
+
+	output_gtf = args.output_gtf
+	output_bed = args.output_bed
+	detectORF.main(gene_dict=gene_dict, transcript_dict=transcript_dict, annot_dir = args.annot_dir,
+	               tpsites_sum=tpsites_sum, total_psites_number=total_psites_number,
+	               pval_cutoff = args.pval_cutoff, only_longest_orf=longest_orf, START_CODON=START_CODON,
+	               ALTERNATIVE_START_CODON_LIST=ALTERNATIVE_START_CODON_LIST, STOP_CODON_LIST=STOP_CODON_LIST,
+	               MIN_AA_LENGTH=args.min_AA_length, outname=args.output_name,
+	               output_gtf=output_gtf, output_bed=output_bed)
+
 if __name__ == "__main__":
 	main()

@@ -1,5 +1,7 @@
 # List the ribosome profiling bam/sam files below and specify the lengths and P-site locations of alignment reads which
-#  are most likely originated from the translating ribosomes.
+# are most likely originated from the translating ribosomes. If multiple files are defined, their P-site densities along
+# each nucleotide would be added together.
+
 
 # Explanation of each column:
 # 1. SampleName: specify a name for each sample
