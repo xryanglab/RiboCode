@@ -68,7 +68,7 @@ def filter_transcript(gene_dict,transcript_dict):
 def readTranscriptBam(bamFile,filter_tids,transcript_dict,stranded,minLength,maxLength):
 
 	tracks = pysam.AlignmentFile(bamFile)
-	if next(iter(filter_tids)) not in tracks.references:
+	if tracks.references[0] not in filter_tids:
 		sys.stderr.write("Error, the references in bam are different from transcriptome annotation, \n" +
 		                 "you should input the transcriptome BAM file.")
 		sys.exit()
@@ -160,7 +160,7 @@ def main():
 	filter_tids = filter_transcript(gene_dict,transcript_dict)
 	# read bam file
 	distance_to_start_count,distance_to_stop_count,length_counter = readTranscriptBam(
-		args.ribo_bam,filter_tids,transcript_dict,args.stranded,args.minLength,args.maxLength)
+		args.rpf_mapping_file,filter_tids,transcript_dict,args.stranded,args.minLength,args.maxLength)
 	# predefine the psite
 	pre_psite_dict = {}
 	total_reads = sum(length_counter.values())
@@ -189,7 +189,7 @@ def main():
 	stranded = "yes" if args.stranded is True else "reverse"
 	pre_psite_len = map(str,sorted(pre_psite_dict.keys()))
 	pre_psite_loc = map(str,[-pre_psite_dict[i]+50 for i in sorted(pre_psite_dict.keys())])
-	fout.write("\t".join(map(str,["SampleName",args.ribo_bam,stranded,",".join(pre_psite_len),",".join(pre_psite_loc)])) + "\n")
+	fout.write("\t".join(map(str,["SampleName",args.rpf_mapping_file,stranded,",".join(pre_psite_len),",".join(pre_psite_loc)])) + "\n")
 	fout.close()
 	distancePlot(distance_to_start_count,distance_to_stop_count,pre_psite_dict,length_counter,args.outname)
 	#lengthDistribution(length_counter,args.outname)

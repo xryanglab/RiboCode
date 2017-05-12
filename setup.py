@@ -32,7 +32,7 @@ setup(
 
     # https://packaging.python.org/en/latest/single_source_version.html
 
-    version='1.2.4',
+    version='1.2.5',
 
 
     #TODO fix name
@@ -164,7 +164,8 @@ setup(
             'RiboCode=RiboCode.RiboCode:main',
             'prepare_transcripts=RiboCode.prepare_transcripts:main',
             'metaplots=RiboCode.metaplots:main',
-            'plot_orf_density=RiboCode.plot_orf_density:main'
+            'plot_orf_density=RiboCode.plot_orf_density:main',
+            'ORF_count=RiboCode.RPF_count_ORF:main'
         ],
 
     },

@@ -374,7 +374,7 @@ def main(gene_dict, transcript_dict, annot_dir, tpsites_sum, total_psites_number
 	sys.stdout.write("\n\tWriting the results to file .....\n")
 	write_result(orf_results,outname)
 	fout = open(outname + "_collapsed.txt","w")
-	header = "\t".join(orf_results[0].keys())
+	header = "\t".join(orf_results[0].keys()[:-1])
 	fout.write(header + "\n")
 	ORFs_category_dict = OrderedDict()
 	for k in ["annotated","uORF","dORF","Overlapped","novel_PCGs","novel_NonPCGs"]:

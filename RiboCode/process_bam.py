@@ -49,7 +49,7 @@ def read_bam(configData):
 			tpsites[tid] = np.zeros(transcript_dict[tid].length,dtype="int32")
 
 		tracks = pysam.AlignmentFile(bamFile)
-		if tid not in tracks.references:
+		if tracks.references[0] not in transcript_dict:
 			sys.stderr.write("Error, the references in bam is different from transcriptome annotation, \n" +
 			                 "you should input the transcriptome BAM/SAM file.")
 			sys.exit()
@@ -63,11 +63,12 @@ def read_bam(configData):
 
 			if r.query_length in psites_dict:
 				t_psite = r.reference_start + psites_dict[r.query_length]
-				if t_psite > transcript_dict[tid].length:
-					continue
-				else:
-					total_psites.add(r.query_name)
+				try:
 					tpsites[tid][t_psite] += 1
+					total_psites.add(r.query_name)
+				except IndexError:
+					pass
+
 		psites_number = len(total_psites)
 		del total_psites
 		write_psites(tpsites,psites_number, name + "_psites.hd5")

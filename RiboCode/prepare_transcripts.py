@@ -169,7 +169,7 @@ def readGTF(filename):
 	gene_dict = {}
 	transcript_dict = {}
 	with open(filename) as fin:
-		for line in fin:
+		for i,line in enumerate(fin):
 			if line[0] == "#" or (not line.strip()):
 				continue
 			field_dict = parsing_line(line)
@@ -181,9 +181,11 @@ def readGTF(filename):
 				transcript_dict[tobj.transcript_id] = tobj
 			elif field_dict["feature"] in ["exon","CDS","start_codon","stop_codon"]:
 				tid = field_dict["attr"]["transcript_id"]
-				if tid not in transcript_dict:
-					raise ParsingError("The annotation in GTF file should be three-level hierarchy of gene => transcript => exon (or CDS)")
-				transcript_dict[tid].add_feature(field_dict)
+				try:
+					transcript_dict[tid].add_feature(field_dict)
+				except KeyError:
+					raise ParsingError("Error in line %i. The annotation in GTF file should be three-level hierarchy of \
+					                    gene => transcript => exon (or CDS)" % i)
 			else:
 				pass
 	return gene_dict,transcript_dict
@@ -362,9 +364,8 @@ def processTranscripts(genomeFasta,gtfFile,out_dir):
 			else:
 				pass
 
-			transcript_seq = ""
-			for exon_iv in tobj.genomic_exons:
-				transcript_seq += genomic_seq.get_seq(tobj.chrom,exon_iv.start,exon_iv.end,exon_iv.strand)
+			transcript_seq = [genomic_seq.get_seq(tobj.chrom,exon_iv.start,exon_iv.end,exon_iv.strand) for exon_iv in tobj.genomic_exons]
+			transcript_seq = "".join(transcript_seq)
 			# write the transcript sequence to file
 			transcript_seq_file.write(">%s %i\n%s\n" % (tobj.transcript_id,tobj.length,transcript_seq))
 
@@ -379,8 +380,8 @@ def processTranscripts(genomeFasta,gtfFile,out_dir):
 		return gene_dict,transcript_dict
 
 def verboseprint(printstring):
-	sys.stdout.write('[%s] %s\n' % (strftime("%Y-%m-%d %H:%M:%S"), printstring))
-	sys.stdout.flush()
+	sys.stderr.write('[%s] %s\n' % (strftime("%Y-%m-%d %H:%M:%S"), printstring))
+	sys.stderr.flush()
 
 
 def main():

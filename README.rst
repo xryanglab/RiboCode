@@ -26,41 +26,39 @@ Dependencies:
 Installation
 ------------
 
-*RiboCode* can be installed like any other Python packages. Here are some popular ways:
+   *RiboCode* can be installed like any other Python packages. Here are some popular ways:
 
-* Install from PyPI:
+   * Install from PyPI:
 
-.. code-block:: bash
+   .. code-block:: bash
 
-   pip install RiboCode
+      pip install RiboCode
 
-* Install from local:
+   * Install from local:
 
-.. code-block:: bash
+   .. code-block:: bash
 
-   pip install RiboCode-*.tar.gz
+      pip install RiboCode-*.tar.gz
 
    If you have not administrator permission, you need to install *RiboCode* locally in you own directory by adding the
    option ``--user`` to installation commands. Then, you need to add ``~/.local/bin/`` to the ``PATH`` variable,
    and ``~/.local/lib/`` to the ``PYTHONPATH`` variable. For example, if you are using the bash shell, you would do
    this by adding the following lines to your ``~/.bashrc`` file:
 
-.. code-block:: bash
+   .. code-block:: bash
 
-   export PATH=$PATH:$HOME/.local/bin/
-   export PYTHONPATH=$HOME/.local/lib/python2.7
+      export PATH=$PATH:$HOME/.local/bin/
+      export PYTHONPATH=$HOME/.local/lib/python2.7
 
-You then need to source your ``~/.bashrc`` file by this command:
+   You then need to source your ``~/.bashrc`` file by this command:
 
-.. code-block:: bash
+   .. code-block:: bash
 
-   source ~/.bashrc
+      source ~/.bashrc
 
 Tutorial to analyze ribosome-profiling data and run *RiboCode*
 --------------------------------------------------------------
-
-Here, we use the `HEK293 dataset`_ as an example to illustrate the use of *RiboCode*.
-Please make sure the path of file is correctly.
+   Here, we use the `HEK293 dataset`_ as an example to illustrate the use of *RiboCode*. Please make sure the path of file is correctly.
 
 1. **Required files**
 
@@ -113,7 +111,7 @@ Please make sure the path of file is correctly.
    .. code-block:: bash
 
       bowtie-build <rRNA.fa> rRNA
-      bowtie -p 8 -norc --un un_aligned.fastq rRNA -q <SRR1630831.fastq> <HEK293_rRNA.align>
+      bowtie -p 8 -norc --un <un_aligned.fastq> -q <SRR1630831.fastq> rRNA <HEK293_rRNA.align>
 
 4. **Aligning the clean reads to reference genome**
 
@@ -199,9 +197,9 @@ Please make sure the path of file is correctly.
     - pval_frame0_vs_frame2: significance levels of P-site densities of frame0 greater than of frame2
     - pval_combined: integrated P-value
 
-   (4). (optional) plot the P-site densities of predicted ORFs
+   (4). (optional) Plotting the densities of P-sites for predicted ORFs
 
-   Users can plot the density of predicted ORFs using the "parsing_plot_orf_density" command, as example below:
+   Users can plot the density of P-sites for a ORF using the "parsing_plot_orf_density" command, as example below:
 
    .. code-block:: bash
 
@@ -209,6 +207,20 @@ Please make sure the path of file is correctly.
       -s (ORF_gstart) -e (ORF_gstop)
 
    The generated PDF plots can be edited by Adobe Illustrator.
+
+   (5). (optional) Counting the number of RPF reads aligned to ORFs
+
+   The number of reads mapping to each ORF can be obtained by the "ORF_count" command which relying on HTSeq-count package.
+   The first few codons and last few codons of ORF with length longer than a given value can be excluded by adjusting specific parameters.
+   Only the reads of a given length will be counted. For example, the reads with length between 26-34 nt aligned to
+   predicted ORF can be obtained by using below command:
+
+   .. code-block:: bash
+
+      ORF_count -g <RiboCode_ORFs_result.gtf> -r <ribo-seq genomic mapping file> -f 15 -l 5 -e 100 -m 26 -M 34 -o <ORF.counts>
+
+   The reads aligned to first 15 codons and last 5 codons of ORFs with length longer than 100 nt will be excluded.
+
 
 Recipes (FAQ):
 --------------
@@ -222,6 +234,33 @@ Recipes (FAQ):
    You can select the read lengths which show strong 3-nt periodicity and the corresponding P-site locations for each
    BAM/SAM file, then list each file and their information in `config.txt`_ file. *RiboCode* will combine the P-site
    densities at each nucleotides of these BAM/SAM files together to predict ORFs.
+
+3. **Generating figures with matplotlib when DISPLAY variable is undefined or invalid**
+
+   When running the "metaplots" or "plot_orf_density" command,  some users received errors similar to the following:
+
+      ``raise RuntimeError('Invalid DISPLAY variable')``
+
+      ``_tkinter.TclError: no display name and no $DISPLAY environment variable``
+
+   The main problem is that default backend of matplotlib is unavailable. The solution is to modify the backend.
+   A very simple solution is to set the MPLBACKEND environment variable, either for your current shell or for a single script:
+
+   .. code-block:: bash
+
+      export MPLBACKEND="module://my_backend"
+
+   Giving below are non-interactive backends, capable of writing to a file:
+
+      Agg  PS  PDF  SVG  Cairo  GDK
+
+   See also:
+
+   http://matplotlib.org/faq/usage_faq.html#what-is-a-backend
+
+   http://matplotlib.org/users/customizing.html#the-matplotlibrc-file
+
+   http://stackoverflow.com/questions/2801882/generating-a-png-with-matplotlib-when-display-is-undefined
 
 
 For any questions, please contact:
