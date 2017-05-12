@@ -68,7 +68,7 @@ def filter_transcript(gene_dict,transcript_dict):
 def readTranscriptBam(bamFile,filter_tids,transcript_dict,stranded,minLength,maxLength):
 
 	tracks = pysam.AlignmentFile(bamFile)
-	if tracks.references[0] not in filter_tids:
+	if tracks.references[0] not in transcript_dict:
 		sys.stderr.write("Error, the references in bam are different from transcriptome annotation, \n" +
 		                 "you should input the transcriptome BAM file.")
 		sys.exit()
