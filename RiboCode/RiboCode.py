@@ -32,7 +32,7 @@ def main():
 
 	#  reading the bam file
 	import process_bam
-	tpsites_sum, total_psites_number = process_bam.psites_count(configIn.configList,transcript_dict)
+	tpsites_sum, total_psites_number = process_bam.psites_count(configIn.configList,transcript_dict,thread_num=1)
 	import detectORF
 	if args.longest_orf == "yes":
 		longest_orf = True
