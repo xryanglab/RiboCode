@@ -120,7 +120,7 @@ setup(
 
     # https://packaging.python.org/en/latest/requirements.html
 
-    install_requires=['pysam>0.8.4','matplotlib','numpy','scipy','pyfasta','biopython','h5py'],
+    install_requires=['pysam>0.8.4','matplotlib','numpy>1.11.0','scipy','pyfasta','biopython','h5py'],
 
 
     # List additional groups of dependencies here (e.g. development
