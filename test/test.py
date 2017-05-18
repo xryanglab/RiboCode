@@ -1,19 +1,16 @@
 #!/usr/bin/env python
 # -*- coding:UTF-8 -*-
 __author__ = 'Zhengtao Xiao'
-from RiboCode import RiboCode
-
-print "RiboCode",dir(RiboCode)
+from RiboCode import prepare_transcripts,metaplots,plot_orf_density,RPF_count_ORF
 
 def test_prepare_transcripts():
-	print "RiboCode",dir(RiboCode)
-	RiboCode.prepare_transcripts.main()
+	prepare_transcripts.main()
 
 def test_metaplots():
-	RiboCode.metaplots.main()
+	metaplots.main()
 
 def test_plot_orf_density():
-	RiboCode.plot_orf_density.main()
+	plot_orf_density.main()
 
 def test_ORFcount():
-	RiboCode.RPF_count_ORF.main()
+	RPF_count_ORF.main()
