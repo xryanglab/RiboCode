@@ -3,13 +3,13 @@
 __author__ = 'Zhengtao Xiao'
 
 def test_prepare_transcripts():
-	RiboCode.prepare_transcripts.main()
+	prepare_transcripts.main()
 
 def test_metaplots():
-	RiboCode.metaplots.main()
+	metaplots.main()
 
 def test_plot_orf_density():
-	RiboCode.plot_orf_density.main()
+	plot_orf_density.main()
 
 def test_ORFcount():
-	RiboCode.RPF_count_ORF.main()
+	RPF_count_ORF.main()
