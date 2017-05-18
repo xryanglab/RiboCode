@@ -3,6 +3,8 @@
 __author__ = 'Zhengtao Xiao'
 from RiboCode import RiboCode
 
+print "RiboCode",dir(RiboCode)
+
 def test_prepare_transcripts():
 	RiboCode.prepare_transcripts.main()
 
