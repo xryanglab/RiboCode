@@ -8,4 +8,4 @@ before_install:
 install:
   - pip install .
 script:
-  - pytest test/test.py
+  - ./run_test_travis.sh
