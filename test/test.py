@@ -6,6 +6,7 @@ from RiboCode import RiboCode
 print "RiboCode",dir(RiboCode)
 
 def test_prepare_transcripts():
+	print "RiboCode",dir(RiboCode)
 	RiboCode.prepare_transcripts.main()
 
 def test_metaplots():
