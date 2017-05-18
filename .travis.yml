@@ -1,3 +1,6 @@
+os:
+  - linx
+  - osx
 language: python
 python:
   - "2.7"
