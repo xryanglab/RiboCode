@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding:UTF-8 -*-
 __author__ = 'Zhengtao Xiao'
-import RiboCode
+from RiboCode import RiboCode
 
 def test_prepare_transcripts():
 	RiboCode.prepare_transcripts.main()
