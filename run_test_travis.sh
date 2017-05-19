@@ -36,3 +36,14 @@ plot_orf_density -h
 if [ $? != 0 ]; then
 	exit 1
 fi
+
+#4
+echo
+echo "test ORFcount"
+echo
+
+ORFcount -h
+
+if [ $? != 0 ]; then
+	exit 1
+fi

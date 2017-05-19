@@ -15,4 +15,5 @@
 	- Update document.
 
 * 2017.5.17 - version 1.2.6 release !
-	- Fixed a small bug in ORFcount command
+	- Fixed a small bug in ORFcount command.
+    - Included package into bioconda.

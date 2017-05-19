@@ -22,18 +22,32 @@ Dependencies:
 
 - matplotlib
 
-- setuptools
+- HTSeq
 
 Installation
 ------------
 
    *RiboCode* can be installed like any other Python packages. Here are some popular ways:
 
-   * Install from PyPI:
+   * Install via pypi:
 
    .. code-block:: bash
 
-      pip install RiboCode
+      pip install ribocode
+
+   * Install via conda:
+
+   .. code-block:: bash
+
+      conda install -c bioconda ribocode
+
+   * Install from source:
+
+   .. code-block:: bash
+
+      git clone https://www.github.com/xzt41/RiboCode
+      cd RiboCode
+      python setup.py install
 
    * Install from local:
 
