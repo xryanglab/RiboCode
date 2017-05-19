@@ -4,6 +4,7 @@ __author__ = 'Zhengtao Xiao'
 
 import argparse
 import os
+from sys import stderr
 
 def parsing_transcript():
 	parser = argparse.ArgumentParser(
@@ -102,6 +103,9 @@ def parsing_ribo():
 	                    [please refer: https://www.ncbi.nlm.nih.gov/Taxonomy/Utils/wprintgc.cgi]")
 	parser.add_argument("-m","--min-AA-length",dest="min_AA_length",default="20",required=False,
 	                    help="The minimal length of predicted peptides,default 20", type=int)
+	# parser.add_argument("-P","--parallel_num",dest="parallel_num",default=1,required=False,
+	#                     help="the number of threads to read the alignment file(s), \
+	#                     the optimal value is the number of alignment files, default=1",type=int)
 	parser.add_argument("-o","--output-name",dest="output_name",default="final_result",required=False,
 	                    help="output file name, default: final_result", type=str)
 	parser.add_argument("-g","--output-gtf",dest="output_gtf",action='store_true',default=False,required=False,
@@ -168,6 +172,9 @@ def parsing_ORF_count():
 	                    help="minimal read length for the counting of RPF,default:26")
 	parser.add_argument("-M","--max_read",dest="max_read",required=False,type=int,default=34,
 	                    help="maximal read length for the counting of RPF,default:34")
+	# parser.add_argument("-p","--parallel_num",dest="parallel_num",required=False,type=int,default=1,
+	#                     help="the number of threads to read the alignment file(s), \
+	#                     the optimal value is the number of alignment files, default=1")
 	parser.add_argument("-o","--output",dest="output_file",required=False,type=str,
 	                    default="-",help="write out all ORF counts into a file, default is to write to standard output")
 	args = parser.parse_args()
@@ -176,5 +183,11 @@ def parsing_ORF_count():
 		raise ValueError("Error, the gtf file not found: {}".format(args.gtf_file))
 	if args.first_exclude_codons * 3 + args.last_exclude_codons * 3 >= args.exclude_min_ORF:
 		raise ValueError("Error, the exclude_min_ORF is too small: %i" % args.exclude_min_ORF)
-
+	if "," in args.rpf_mapping_file:
+		rpf_mapping_files = [i.strip() for i in args.rpf_mapping_file.split(",")]
+		args.rpf_mapping_file = rpf_mapping_files
+	else:
+		args.rpf_mapping_file = [args.rpf_mapping_file]
+	# if args.parallel_num > len(args.rpf_mapping_file):
+	# 	args.parallel_num = len(args.rpf_mapping_file)
 	return args

@@ -38,8 +38,9 @@ def invert_strand( iv ):
 		raise ValueError("Illegal strand")
 	return iv2
 
-def count_reads(start_codon_sites,stop_codon_sites,ORF_features,counts,map_file,stranded,
-                min_quality,count_mode,first_exclude_codons,last_exclude_codons,min_read,max_read,exclude_min_ORF):
+def count_reads(start_codon_sites,stop_codon_sites,ORF_features,counts,map_file,stranded,min_quality,count_mode,
+                first_exclude_codons,last_exclude_codons,min_read,max_read,exclude_min_ORF):
+
 	lowqual = 0
 	notaligned = 0
 	nonunique = 0
@@ -118,12 +119,12 @@ def count_reads(start_codon_sites,stop_codon_sites,ORF_features,counts,map_file,
 				except:
 					counts[orf_id] += 1
 		except:
-			sys.stderr.write("Error occurred when processing mapping file in line:%i\n" % i)
-		counts["__too_low_quality"] += lowqual
-		counts["__not_aligned"] += notaligned
-		counts[min_read_string] += too_short
-		counts[max_read_string] += too_long
-		counts["__alignment_not_unique"] += nonunique
+			sys.stderr.write("Error occurred when processing mapping file in line:%s\n" % r.get_sam_line())
+	counts["__too_low_quality"] += lowqual
+	counts["__not_aligned"] += notaligned
+	counts[min_read_string] += too_short
+	counts[max_read_string] += too_long
+	counts["__alignment_not_unique"] += nonunique
 
 	return counts
 
@@ -140,13 +141,9 @@ def main():
 	counts["__too_long(<%i)" % args.max_read] = 0
 	counts["__alignment_not_unique"] = 0
 	verboseprint("Reading the mapping file ...")
-	if "," in args.rpf_mapping_file:
-		for f in args.rpf_mapping_file.split(","):
-			counts = count_reads(start_codon_sites,stop_codon_sites,ORF_features,counts,f.strip(),args.stranded,
-			                     args.min_quality,args.count_mode,args.first_exclude_codons,args.last_exclude_codons,
-			                     args.min_read,args.max_read,args.exclude_min_ORF)
-	else:
-		counts = count_reads(start_codon_sites,stop_codon_sites,ORF_features,counts,args.rpf_mapping_file,args.stranded,
+
+	for f in args.rpf_mapping_file:
+		counts = count_reads(start_codon_sites,stop_codon_sites,ORF_features,counts,f.strip(),args.stranded,
 		                     args.min_quality,args.count_mode,args.first_exclude_codons,args.last_exclude_codons,
 		                     args.min_read,args.max_read,args.exclude_min_ORF)
 
@@ -155,7 +152,7 @@ def main():
 	else:
 		fout = open(args.output_file,"w")
 
-	for i in sorted(counts):
+	for i in sorted(counts.keys()):
 		fout.write("%s\t%d\n" % (i,counts[i]))
 
 	fout.close()

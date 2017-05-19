@@ -1,0 +1,11 @@
+language: python
+python:
+  - "2.7"
+sudo: required
+before_install:
+  - sudo apt-get install -y libhdf5-serial-dev
+  - sudo apt-get install -y hdf5-tools
+install:
+  - pip install .
+script:
+  - ./run_test_travis.sh

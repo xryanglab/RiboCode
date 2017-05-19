@@ -1,3 +1,4 @@
+====================================================
 Detect translated ORFs using ribosome-profiling data
 ====================================================
 
@@ -21,18 +22,32 @@ Dependencies:
 
 - matplotlib
 
-- setuptools
+- HTSeq
 
 Installation
 ------------
 
    *RiboCode* can be installed like any other Python packages. Here are some popular ways:
 
-   * Install from PyPI:
+   * Install via pypi:
 
    .. code-block:: bash
 
-      pip install RiboCode
+      pip install ribocode
+
+   * Install via conda:
+
+   .. code-block:: bash
+
+      conda install -c bioconda ribocode
+
+   * Install from source:
+
+   .. code-block:: bash
+
+      git clone https://www.github.com/xzt41/RiboCode
+      cd RiboCode
+      python setup.py install
 
    * Install from local:
 
@@ -58,7 +73,8 @@ Installation
 
 Tutorial to analyze ribosome-profiling data and run *RiboCode*
 --------------------------------------------------------------
-   Here, we use the `HEK293 dataset`_ as an example to illustrate the use of *RiboCode*. Please make sure the path of file is correct.
+   Here, we use the `HEK293 dataset`_ as an example to illustrate the use of *RiboCode* and demonstrate typical workflows.
+   Please make sure the path of file is correct.
 
 1. **Required files**
 
@@ -217,7 +233,7 @@ Tutorial to analyze ribosome-profiling data and run *RiboCode*
 
    .. code-block:: bash
 
-      ORF_count -g <RiboCode_ORFs_result.gtf> -r <ribo-seq genomic mapping file> -f 15 -l 5 -e 100 -m 26 -M 34 -o <ORF.counts>
+      ORFcount -g <RiboCode_ORFs_result.gtf> -r <ribo-seq genomic mapping file> -f 15 -l 5 -e 100 -m 26 -M 34 -o <ORF.counts>
 
    The reads aligned to first 15 codons and last 5 codons of ORFs with length longer than 100 nt will be excluded.
 
@@ -266,11 +282,11 @@ Recipes (FAQ):
 For any questions, please contact:
 ----------------------------------
 
-   Zhengtao Xiao (xzt13@mails.tsinghua.edu.cn)
+   Zhengtao Xiao (xzt13[at]mails.tsinghua.edu.cn)
 
-   Rongyao Huang (THUhry12@163.com)
+   Rongyao Huang (THUhry12[at]163.com)
 
-   Xudong Xing (xudonxing_bioinf@sina.com)
+   Xudong Xing (xudonxing_bioinf[at]sina.com)
 
 .. _SRA_Toolkit: https://trace.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?view=software
 .. _HEK293 dataset: https://trace.ncbi.nlm.nih.gov/Traces/sra/?run=SRR1630831
