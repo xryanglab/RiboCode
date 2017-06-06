@@ -386,8 +386,8 @@ def verboseprint(printstring):
 
 def main():
 	import parsing_opts
-	verboseprint("Preparing annotation files ...")
 	args = parsing_opts.parsing_transcript()
+	verboseprint("Preparing annotation files ...")
 	processTranscripts(args.genomeFasta,args.gtfFile,args.out_dir)
 	verboseprint("Finished!")
 if __name__ == "__main__":

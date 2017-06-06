@@ -49,7 +49,7 @@ def percentage_format(value,decimal=2):
 
 def cal_coverage(inArray):
 	nozeros = np.flatnonzero(inArray).size
-	return float(nozeros) / inArray.size
+	return nozeros / inArray.size
 
 def cal_RPKM(input_counts,input_length,total_counts):
 	"""
@@ -293,7 +293,7 @@ def main(gene_dict, transcript_dict, annot_dir, tpsites_sum, total_psites_number
 	transcript_reads_count = {}
 	for i,tid in enumerate(transcript_dict.iterkeys()):
 		if i % 1000 == 0:
-			sys.stderr.write(percentage_format(float(i) / tid_num,decimal=0) + " has finished! \r")
+			sys.stderr.write(percentage_format(i / tid_num,decimal=0) + " has finished! \r")
 
 		tobj = transcript_dict[tid]
 		tpsites = tpsites_sum[tid]

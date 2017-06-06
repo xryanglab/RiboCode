@@ -110,7 +110,7 @@ def distancePlot(distance_to_start_count,distance_to_stop_count,pre_psite_dict,l
 				xticks = [-40,-20,0,20,40]
 			else:
 				xticks = sorted([-40,-20,0,20,40] + pre_psite_dict[l] -50)
-			perct = '{:.2%}'.format(float(length_counter[l]) / total_reads)
+			perct = '{:.2%}'.format(length_counter[l] / total_reads)
 			fig,(ax1,ax2) = plt.subplots(nrows=2,ncols=1)
 			y1 = distance_to_start_count[l]
 			y2 = distance_to_stop_count[l]
@@ -179,7 +179,7 @@ def main():
 			continue
 		if (pv1.pvalue < args.pvalue1_cutoff) and (pv2.pvalue <  args.pvalue2_cutoff):
 			pre_psite_dict[l] = pre_psite
-			read_percent = '{:.2%}'.format(float(length_counter[l]) / total_reads)
+			read_percent = '{:.2%}'.format(length_counter[l] / total_reads)
 			num_of_codons = len(f0)
 			fout.write("# " + "\t".join(map(str,[l,read_percent,-pre_psite+50,num_of_codons,f0.sum(),f1.sum(),f2.sum(),
 			                                     '{:.2%}'.format(f0_percent),pv1.pvalue,pv2.pvalue,pv])) + "\n")
