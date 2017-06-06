@@ -2,8 +2,7 @@
 Detect translated ORFs using ribosome-profiling data
 ====================================================
 
-.. image:: https://travis-ci.org/xzt41/RiboCode.svg?branch=master
-    :target: https://travis-ci.org/xzt41/RiboCode
+|PyPI| |Build Status| |Python Versions|
     
 *RiboCode* is a very simple but high-quality computational algorithm to
 identify genome-wide translated ORFs using ribosome-profiling data.
@@ -292,7 +291,20 @@ For any questions, please contact:
    Xudong Xing (xudonxing_bioinf[at]sina.com)
 
 .. _SRA_Toolkit: https://trace.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?view=software
+
 .. _HEK293 dataset: https://trace.ncbi.nlm.nih.gov/Traces/sra/?run=SRR1630831
+
 .. _config.txt: https://github.com/xzt41/RiboCode/blob/master/data/config.txt
+
 .. _rRNA.fa: https://github.com/xzt41/RiboCode/blob/master/data/rRNA.fa
+
 .. _UNC Bioinformatics Utilities: https://github.com/mozack/ubu
+
+.. |Build Status| image:: https://travis-ci.org/xzt41/RiboCode.svg?branch=master
+   :target: https://travis-ci.org/xzt41/RiboCode
+
+.. |PyPI| image:: https://img.shields.io/pypi/v/RiboCode.svg?style=plastic
+   :target: https://pypi.python.org/pypi/RiboCode
+
+.. |Python Versions| image:: https://img.shields.io/pypi/pyversions/RiboCode.svg?style=plastic
+   :target: https://pypi.python.org/pypi/RiboCode
