@@ -300,7 +300,7 @@ For any questions, please contact:
 
 .. _UNC Bioinformatics Utilities: https://github.com/mozack/ubu
 
-.. |Build Status| image:: https://api.travis-ci.org/zacharyvoase/urlobject.svg?branch=master&style=plastic
+.. |Build Status| image:: https://img.shields.io/travis/xzt41/RiboCode/master.svg?style=plastic
    :target: https://travis-ci.org/xzt41/RiboCode
 
 .. |PyPI| image:: https://img.shields.io/pypi/v/RiboCode.svg?style=plastic
