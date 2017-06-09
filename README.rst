@@ -309,5 +309,5 @@ For any questions, please contact:
 .. |Python Versions| image:: https://img.shields.io/pypi/pyversions/RiboCode.svg?style=plastic
    :target: https://pypi.python.org/pypi/RiboCode
 
-.. |BioConda| image:: https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg?style=plasti
+.. |BioConda| image:: https://img.shields.io/badge/install-bioconda-green.svg?style=plastic
    :target: http://bioconda.github.io/recipes/ribocode/README.html
