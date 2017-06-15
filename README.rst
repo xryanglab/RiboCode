@@ -73,6 +73,15 @@ Installation
 
       source ~/.bashrc
 
+   Users can also update or uninstall package through one of the following commands:
+
+   .. code-block:: bash
+
+      pip install --upgrade RiboCode # upgrade
+      pip uninstall RiboCode # uninstall
+      conda update -c bioconda ribocode # upgrade
+      conda remove ribocode # uninstall
+
 Tutorial to analyze ribosome-profiling data and run *RiboCode*
 --------------------------------------------------------------
    Here, we use the `HEK293 dataset`_ as an example to illustrate the use of *RiboCode* and demonstrate typical workflows.
