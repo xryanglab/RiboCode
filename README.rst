@@ -293,7 +293,7 @@ Recipes (FAQ):
 For any questions, please contact:
 ----------------------------------
 
-   Zhengtao Xiao (xzt13[at]mails.tsinghua.edu.cn)
+   Zhengtao Xiao (xzt13[at]tsinghua.org.cn)
 
    Rongyao Huang (THUhry12[at]163.com)
 
