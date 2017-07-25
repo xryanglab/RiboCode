@@ -389,6 +389,6 @@ def main():
 	args = parsing_opts.parsing_transcript()
 	verboseprint("Preparing annotation files ...")
 	processTranscripts(args.genomeFasta,args.gtfFile,args.out_dir)
-	verboseprint("Finished!")
+	verboseprint("The step of preparing transcript annotation has been completed.")
 if __name__ == "__main__":
 	main()

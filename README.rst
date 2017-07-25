@@ -224,6 +224,13 @@ Tutorial to analyze ribosome-profiling data and run *RiboCode*
     - pval_frame0_vs_frame2: significance levels of P-site densities of frame0 greater than of frame2
     - pval_combined: integrated P-value
 
+   All the three steps above can also be easily run with a single command "RiboCode_onestep" like:
+
+   .. code-block:: bash
+
+      RiboCode_onestep -g <gencode.v19.annotation.gtf> -f <hg19_genome.fa> -r <HEK293Aligned.toTranscriptome.out.bam>
+                       -l no -o <RiboCode_ORFs_result>
+
    (4). (optional) Plotting the densities of P-sites for predicted ORFs
 
    Users can plot the density of P-sites for a ORF using the "parsing_plot_orf_density" command, as example below:

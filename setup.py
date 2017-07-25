@@ -13,6 +13,7 @@ https://github.com/pypa/sampleproject
 from setuptools import setup, find_packages
 from codecs import open
 from os import path
+from RiboCode import __version__
 
 here = path.abspath(path.dirname(__file__))
 
@@ -32,7 +33,7 @@ setup(
 
     # https://packaging.python.org/en/latest/single_source_version.html
 
-    version='1.2.6',
+    version= __version__,
 
 
     #TODO fix name
@@ -162,6 +163,7 @@ setup(
         'console_scripts': [
             #name determined the name of cmd line direct call
             'RiboCode=RiboCode.RiboCode:main',
+            'RiboCode_onestep=RiboCode.RiboCode_onestep:main',
             'prepare_transcripts=RiboCode.prepare_transcripts:main',
             'metaplots=RiboCode.metaplots:main',
             'plot_orf_density=RiboCode.plot_orf_density:main',

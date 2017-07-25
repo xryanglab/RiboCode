@@ -7,9 +7,10 @@ Master script for running RiboCode program.
 Usage:
 	RiboCode.py -e <config_table.txt> -o <result.txt>
 Details:
-	Type "python RiboCode.py -h" to get the help information.
+	Type "RiboCode.py -h" to get the help information.
 """
 import os
+from prepare_transcripts import *
 def main():
 	"""
 	Master function to call different functionalities of RiboCode
@@ -58,4 +59,6 @@ def main():
 	               output_gtf=output_gtf, output_bed=output_bed)
 
 if __name__ == "__main__":
+	verboseprint("Detecting ORFs ...")
 	main()
+	verboseprint("Finished !")

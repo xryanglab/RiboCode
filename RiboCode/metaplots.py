@@ -178,8 +178,9 @@ def main():
 		if f0_percent < args.frame0_percent:
 			continue
 		if (pv1.pvalue < args.pvalue1_cutoff) and (pv2.pvalue <  args.pvalue2_cutoff):
-			pre_psite_dict[l] = pre_psite
 			read_percent = '{:.2%}'.format(length_counter[l] / total_reads)
+			if length_counter[l] / total_reads >= 0.05:
+				pre_psite_dict[l] = pre_psite
 			num_of_codons = len(f0)
 			fout.write("# " + "\t".join(map(str,[l,read_percent,-pre_psite+50,num_of_codons,f0.sum(),f1.sum(),f2.sum(),
 			                                     '{:.2%}'.format(f0_percent),pv1.pvalue,pv2.pvalue,pv])) + "\n")
@@ -189,10 +190,14 @@ def main():
 	stranded = "yes" if args.stranded is True else "reverse"
 	pre_psite_len = map(str,sorted(pre_psite_dict.keys()))
 	pre_psite_loc = map(str,[-pre_psite_dict[i]+50 for i in sorted(pre_psite_dict.keys())])
-	fout.write("\t".join(map(str,["SampleName",args.rpf_mapping_file,stranded,",".join(pre_psite_len),",".join(pre_psite_loc)])) + "\n")
+	sampleName = os.path.splitext(os.path.basename(args.rpf_mapping_file))[0]
+	fout.write("\t".join(map(str,[sampleName,args.rpf_mapping_file,stranded,",".join(pre_psite_len),",".join(pre_psite_loc)])) + "\n")
 	fout.close()
 	distancePlot(distance_to_start_count,distance_to_stop_count,pre_psite_dict,length_counter,args.outname)
 	#lengthDistribution(length_counter,args.outname)
 
 if __name__ == "__main__":
+	verboseprint("Create metaplot file and determine the P-site locations ...")
 	main()
+	verboseprint("The step of determining P-site locations has been completed.")
+

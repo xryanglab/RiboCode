@@ -5,6 +5,7 @@ __author__ = 'Zhengtao Xiao'
 import argparse
 import os
 from sys import stderr
+from __init__ import __version__
 
 def parsing_transcript():
 	parser = argparse.ArgumentParser(
@@ -16,6 +17,7 @@ def parsing_transcript():
 	parser.add_argument("-f","--fasta",dest="genomeFasta",required=True,type=str,
 	                    help="The genome sequences file in fasta format.")
 	parser.add_argument("-o","--out_dir",required=True,type=str,dest="out_dir",help="annotation directory name.")
+	parser.add_argument('-V',"--version",action="version",version=__version__)
 	args = parser.parse_args()
 
 	if not os.path.exists(args.out_dir):
@@ -48,16 +50,17 @@ def parsing_metaplots():
 	                    reverse means reversed strand interpretation.(default: yes)")
 	parser.add_argument("-m","--minimum-length",dest="minLength",required=False,type=int,default=24,
 	                    help="minimum length of read to output, default 24")
-	parser.add_argument("-M","--maximum-length",dest="maxLength",required=False,type=int,default=35,
-	                    help="maximum length of read to output, default 35")
+	parser.add_argument("-M","--maximum-length",dest="maxLength",required=False,type=int,default=36,
+	                    help="maximum length of read to output, default 36")
 	parser.add_argument("-pv1","--pvalue1_cutoff",dest="pvalue1_cutoff",required=False,type=float,default=0.001,
 	                    help="pvalue cutoff of frame0 > frame2 for automatically predicting P-site location, default 0.001")
 	parser.add_argument("-pv2","--pvalue2_cutoff",dest="pvalue2_cutoff",required=False,type=float,default=0.001,
 	                    help="pvalue cutoff of frame0 > frame2 for automatically predicting P-site location, default 0.001")
-	parser.add_argument("-f0_percent","--frame0_percent",dest="frame0_percent",required=False,type=float,default=0.6,
-	                    help="proportion threshold of the number of reads in frame0, defined by f0/(f0+f1+f2), default 0.6")
+	parser.add_argument("-f0_percent","--frame0_percent",dest="frame0_percent",required=False,type=float,default=0.65,
+	                    help="proportion threshold of the number of reads in frame0, defined by f0/(f0+f1+f2), default 0.65")
 	parser.add_argument("-o","--outname",dest="outname",required=False,type=str,default="metaplots",
 	                    help="name of output pdf file(default: metaplots)")
+	parser.add_argument('-V',"--version",action="version",version=__version__)
 	args = parser.parse_args()
 
 	if not os.path.exists(args.annot_dir):
@@ -92,6 +95,9 @@ def parsing_ribo():
 	                          If set to no , the position of start codon will be automatically determined by program.", type=str)
 	parser.add_argument("-p","--pval-cutoff",dest="pval_cutoff",default=0.05,required=False,
 	                    help="P-value cutoff for ORF filtering, default 0.05", type=float)
+	parser.add_argument("--stranded","--stranded",dest="stranded",required=False,type=str,choices=["yes","reverse"],
+	                    default="yes",help="whether the data is strand-specific, \
+	                    reverse means reversed strand interpretation.(default: yes)")
 	parser.add_argument("-s","--start_codon",default="ATG",type=str,dest="start_codon",
 	                    help="The canonical start codon. default: ATG")
 	parser.add_argument("-A","--alt_start_codons",default="",type=str,dest="alternative_start_codons",
@@ -112,6 +118,7 @@ def parsing_ribo():
 	                    help="output the gtf file of predicted ORFs")
 	parser.add_argument("-b","--output-bed",dest="output_bed",action='store_true',default=False,required=False,
 	                    help="output the bed file of predicted ORFs")
+	parser.add_argument('-V',"--version",action="version",version=__version__)
 	args = parser.parse_args()
 
 	if not os.path.exists(args.annot_dir):
@@ -137,6 +144,7 @@ def parsing_plot_orf_density():
 	                    help="transcript-level coordinates of end of ORF (orf_tstop)")
 	parser.add_argument("-o","--outname",dest="outname",required=False,type=str,default="",
 	                    help="output file name,default is transcriptid_tstart_tstop.pdf")
+	parser.add_argument('-V',"--version",action="version",version=__version__)
 	args = parser.parse_args()
 
 	args.orf_tstart = args.orf_tstart -1 # change to 0 based
@@ -177,6 +185,7 @@ def parsing_ORF_count():
 	#                     the optimal value is the number of alignment files, default=1")
 	parser.add_argument("-o","--output",dest="output_file",required=False,type=str,
 	                    default="-",help="write out all ORF counts into a file, default is to write to standard output")
+	parser.add_argument('-V',"--version",action="version",version=__version__)
 	args = parser.parse_args()
 
 	if not os.path.exists(args.gtf_file):
@@ -190,4 +199,53 @@ def parsing_ORF_count():
 		args.rpf_mapping_file = [args.rpf_mapping_file]
 	# if args.parallel_num > len(args.rpf_mapping_file):
 	# 	args.parallel_num = len(args.rpf_mapping_file)
+	return args
+
+def parsing_ribo_onestep():
+	parser = argparse.ArgumentParser(
+		description="The function contains the steps to prepare a reference genome, to determinate the P-site locations" +
+					" and to detect ORFs. It automatically creates some of the output files."
+
+	)
+	parser.add_argument("-g","--gtf",dest="gtfFile",required=True,type=str,
+	                    help='Default, suitable for GENCODE and ENSEMBL GTF file, \
+	                          please refer: https://en.wikipedia.org/wiki/GENCODE')
+	parser.add_argument("-f","--fasta",dest="genomeFasta",required=True,type=str,
+	                    help="The genome sequences file in fasta format.")
+	parser.add_argument("-r","--rpf_mapping_file",dest="rpf_mapping_file",required=True,type=str,
+	                    help="ribo-seq BAM/SAM file aligned to the transcriptome.")
+	parser.add_argument("-stranded","--stranded",dest="stranded",required=False,type=str,choices=["yes","reverse"],
+	                    default="yes",help="whether the data is strand-specific, \
+	                    reverse means reversed strand interpretation.(default: yes)")
+	parser.add_argument("-l","--longest-orf",dest="longest_orf",choices=["yes","no"],default="yes",required=False,
+	                    help="Default: yes, the region from most distal AUG to stop was defined as an ORF. \
+	                          If set to no , the position of start codon will be automatically determined by program.", type=str)
+	parser.add_argument("-p","--pval-cutoff",dest="pval_cutoff",default=0.05,required=False,
+	                    help="P-value cutoff for ORF filtering, default 0.05", type=float)
+	parser.add_argument("-s","--start_codon",default="ATG",type=str,dest="start_codon",
+	                    help="The canonical start codon. default: ATG")
+	parser.add_argument("-A","--alt_start_codons",default="",type=str,dest="alternative_start_codons",
+	                    help="The alternative start codon, such as CTG,GTG, default: None. Multiple codons should be separated by comma.")
+	parser.add_argument("-S","--stop_codon",default="TAA,TAG,TGA",type=str,dest="stop_codon",
+	                    help="Stop codon, default: TAA,TAG,TGA")
+	parser.add_argument("-t","--transl_table",default=1,dest="transl_table",type=int,
+	                    help="ORF translation table(Default: 1). Assign the correct genetic code based on your organism, \
+	                    [please refer: https://www.ncbi.nlm.nih.gov/Taxonomy/Utils/wprintgc.cgi]")
+	parser.add_argument("-m","--min-AA-length",dest="min_AA_length",default="20",required=False,
+	                    help="The minimal length of predicted peptides,default 20", type=int)
+	# parser.add_argument("-P","--parallel_num",dest="parallel_num",default=1,required=False,
+	#                     help="the number of threads to read the alignment file(s), \
+	#                     the optimal value is the number of alignment files, default=1",type=int)
+	parser.add_argument("-o","--output-name",dest="output_name",default="final_result",required=False,
+	                    help="output file name, default: final_result", type=str)
+	parser.add_argument("-outgtf","--output-gtf",dest="output_gtf",action='store_true',default=False,required=False,
+	                    help="output the gtf file of predicted ORFs")
+	parser.add_argument("-outbed","--output-bed",dest="output_bed",action='store_true',default=False,required=False,
+	                    help="output the bed file of predicted ORFs")
+	parser.add_argument('-V',"--version",action="version",version=__version__)
+	args = parser.parse_args()
+	if not os.path.exists(args.rpf_mapping_file):
+		raise  ValueError("Error, the rpf mapping file not found: %s\n" % args.rpf_mapping_file)
+	args.stranded = True if args.stranded == "yes" else False
+
 	return args

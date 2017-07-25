@@ -18,6 +18,7 @@ class LoadConfig(object):
 		self._parsing()
 
 	def _parsing(self):
+		i = 0
 		with open(self.filename) as fin:
 			samplenames = []
 			for line in fin:
@@ -53,3 +54,8 @@ class LoadConfig(object):
 				samplenames.append(samplename)
 				self.configList.append( dict(zip(["samplename","filepath","stranded","psites_dict"],
 				                                 [samplename,bamfile,stranded,dict(zip(plen,psite))])) )
+				i += 1
+		if i == 0:
+			sys.stderr.write("Error, can not determine the P-site locations." +
+			                 "Please check your input parameters and try again.")
+			sys.exit()
