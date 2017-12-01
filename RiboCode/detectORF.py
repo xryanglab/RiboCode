@@ -386,7 +386,6 @@ def main(gene_dict, transcript_dict, annot_dir, tpsites_sum, total_psites_number
 		orf_transcript_dict = {} #key is orf_gstop, value is tid,orf_gstart,orf_f0_sum,orf index
 		ccds_tids = []
 
-				ccds_tids.append(tid)
 		if only_ccds:
 			# only CCDS transcript or all transcript.
 			for tid in gobj.transcripts:
