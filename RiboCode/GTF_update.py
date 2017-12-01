@@ -101,7 +101,7 @@ def AddGeneFeature(subsets,sourted_gset_keys):
 
 def main():
 	from parsing_opts import parsing_gtf_update
-	args = parsing_gtf_update
+	args = parsing_gtf_update()
 	gset,sourted_gset_keys = GroupGeneSubsets(args.gtfFile)
 	AddGeneFeature(gset,sourted_gset_keys)
 
