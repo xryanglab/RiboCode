@@ -13,7 +13,7 @@ from time import strftime
 class ParsingError(Exception):
 	pass
 
-class Interval(object):
+class Interval:
 	""" basic interval """
 	__slots__ = ("start","end","strand","start_d","end_d","length")
 
@@ -79,13 +79,13 @@ def parsing_line(line):
 	"""
         # GTF columns:
         # 1) chrom: str ("1", "X", "chrX", etc...)
-        # 2) source : str
+        # 2) source : str (not used)
         # 3) feature : str ("gene", "transcript", &c)
         # 4) start : int
         # 5) end : int
-        # 6) score : float or "."
+        # 6) score : float or "." (not used)
         # 7) strand : "+", "-", or "."
-        # 8) frame : 0, 1, 2 or "."
+        # 8) frame : 0, 1, 2 or "." (not used)
         # 9) attribute : key-value pairs separated by semicolons
 	"""
 	fields = line.strip().split("\t")
@@ -94,7 +94,7 @@ def parsing_line(line):
 		raise ParsingError("Wrong number of fields %d (expected 9)" % len(fields))
 	#convert to 0-based.
 	iv = Interval(int(start) - 1, int(end), strand)
-	field_dict = {"chrom": intern(chrom),"feature": intern(feature),"iv":iv,"attr":parsing_attr(attr)}
+	field_dict = {"chrom": intern(chrom),"source":source,"feature": intern(feature),"iv":iv,"attr":parsing_attr(attr)}
 	return field_dict
 
 class Gene:

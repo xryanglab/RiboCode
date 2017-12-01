@@ -280,6 +280,7 @@ def main(gene_dict, transcript_dict, annot_dir, tpsites_sum, total_psites_number
 
 	PSITE_SUM_CUTOFF = F0_NONZEROS = 5
 	transcript_seq = GenomeSeq(os.path.join(annot_dir,"transcripts_sequence.fa"))
+	only_ccds = True
 	if len(START_CODON) == 1 and (not ALTERNATIVE_START_CODON_LIST):
 		only_ATG = True
 	else:
@@ -385,13 +386,16 @@ def main(gene_dict, transcript_dict, annot_dir, tpsites_sum, total_psites_number
 		orf_transcript_dict = {} #key is orf_gstop, value is tid,orf_gstart,orf_f0_sum,orf index
 		ccds_tids = []
 
-
-		# only CCDS transcript or all transcript.
-		for tid in gobj.transcripts:
-			if "CCDS" in transcript_dict[tid].attr.get("tag",[]):
 				ccds_tids.append(tid)
-		if ccds_tids:
-			tids = ccds_tids
+		if only_ccds:
+			# only CCDS transcript or all transcript.
+			for tid in gobj.transcripts:
+				if "CCDS" in transcript_dict[tid].attr.get("tag",[]):
+					ccds_tids.append(tid)
+			if ccds_tids:
+				tids = ccds_tids
+			else:
+				tids = gobj.transcripts
 		else:
 			tids = gobj.transcripts
 

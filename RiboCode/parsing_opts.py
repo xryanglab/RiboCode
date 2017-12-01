@@ -4,8 +4,20 @@ __author__ = 'Zhengtao Xiao'
 
 import argparse
 import os
-from sys import stderr
 from __init__ import __version__
+
+def parsing_gtf_update():
+	parser = argparse.ArgumentParser(
+		description="This script is designed for preparing the appropriate GTF file from \
+		             custom GTF file (or those not from ENSEMBL/GENCODE database)"
+	)
+	# parser.add_argument("-g","--add",dest="",required=True,type=str,
+	#                     help="If add the gene information")
+	# parser.add_argument("-t","",dest="",
+	#                     help="if add the transcript information")
+	parser.add_argument("gtfFile")
+	args = parser.parse_args()
+	return args
 
 def parsing_transcript():
 	parser = argparse.ArgumentParser(
@@ -13,7 +25,8 @@ def parsing_transcript():
 	)
 	parser.add_argument("-g","--gtf",dest="gtfFile",required=True,type=str,
 	                    help='Default, suitable for GENCODE and ENSEMBL GTF file, \
-	                          please refer: https://en.wikipedia.org/wiki/GENCODE')
+	                          please refer: https://en.wikipedia.org/wiki/GENCODE, \
+	                          or using GTFupdate command to update your GTF file.')
 	parser.add_argument("-f","--fasta",dest="genomeFasta",required=True,type=str,
 	                    help="The genome sequences file in fasta format.")
 	parser.add_argument("-o","--out_dir",required=True,type=str,dest="out_dir",help="annotation directory name.")

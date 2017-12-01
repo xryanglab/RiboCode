@@ -29,63 +29,64 @@ Dependencies:
 Installation
 ------------
 
-   *RiboCode* can be installed like any other Python packages. Here are some popular ways:
+*RiboCode* can be installed like any other Python packages. Here are some popular ways:
 
-   * Install via pypi:
+* Install via pypi:
 
-   .. code-block:: bash
+.. code-block:: bash
 
-      pip install ribocode
+  pip install ribocode
 
-   * Install via conda:
+* Install via conda:
 
-   .. code-block:: bash
+.. code-block:: bash
 
-      conda install -c bioconda ribocode
+  conda install -c bioconda ribocode
 
-   * Install from source:
+* Install from source:
 
-   .. code-block:: bash
+.. code-block:: bash
 
-      git clone https://www.github.com/xzt41/RiboCode
-      cd RiboCode
-      python setup.py install
+  git clone https://www.github.com/xzt41/RiboCode
+  cd RiboCode
+  python setup.py install
 
-   * Install from local:
+* Install from local:
 
-   .. code-block:: bash
+.. code-block:: bash
 
-      pip install RiboCode-*.tar.gz
+  pip install RiboCode-*.tar.gz
 
-   If you have not administrator permission, you need to install *RiboCode* locally in you own directory by adding the
-   option ``--user`` to installation commands. Then, you need to add ``~/.local/bin/`` to the ``PATH`` variable,
-   and ``~/.local/lib/`` to the ``PYTHONPATH`` variable. For example, if you are using the bash shell, you would do
-   this by adding the following lines to your ``~/.bashrc`` file:
+If you have not administrator permission, you need to install *RiboCode* locally in you own directory by adding the
+option ``--user`` to installation commands. Then, you need to add ``~/.local/bin/`` to the ``PATH`` variable,
+and ``~/.local/lib/`` to the ``PYTHONPATH`` variable. For example, if you are using the bash shell, you would do
+this by adding the following lines to your ``~/.bashrc`` file:
 
-   .. code-block:: bash
+.. code-block:: bash
 
-      export PATH=$PATH:$HOME/.local/bin/
-      export PYTHONPATH=$HOME/.local/lib/python2.7
+  export PATH=$PATH:$HOME/.local/bin/
+  export PYTHONPATH=$HOME/.local/lib/python2.7
 
-   You then need to source your ``~/.bashrc`` file by this command:
+You then need to source your ``~/.bashrc`` file by this command:
 
-   .. code-block:: bash
+.. code-block:: bash
 
-      source ~/.bashrc
+  source ~/.bashrc
 
-   Users can also update or uninstall package through one of the following commands:
+Users can also update or uninstall package through one of the following commands:
 
-   .. code-block:: bash
+.. code-block:: bash
 
-      pip install --upgrade RiboCode # upgrade
-      pip uninstall RiboCode # uninstall
-      conda update -c bioconda ribocode # upgrade
-      conda remove ribocode # uninstall
+  pip install --upgrade RiboCode # upgrade
+  pip uninstall RiboCode # uninstall
+  conda update -c bioconda ribocode # upgrade
+  conda remove ribocode # uninstall
 
 Tutorial to analyze ribosome-profiling data and run *RiboCode*
 --------------------------------------------------------------
-   Here, we use the `HEK293 dataset`_ as an example to illustrate the use of *RiboCode* and demonstrate typical workflows.
-   Please make sure the path of file is correct.
+
+Here, we use the `HEK293 dataset`_ as an example to illustrate the use of *RiboCode* and demonstrate typical workflows.
+Please make sure the path of file is correct.
 
 1. **Required files**
 
@@ -99,6 +100,8 @@ Tutorial to analyze ribosome-profiling data and run *RiboCode*
    http://asia.ensembl.org/info/data/ftp/index.html
 
    http://useast.ensembl.org/info/data/ftp/index.html
+
+   or you can use "GTFupdate" in *RiboCode* to update you GTF file, see `GTF_update.rst`_
 
    For example, the required files in this tutorial can be downloaded from following URL:
 
@@ -224,7 +227,7 @@ Tutorial to analyze ribosome-profiling data and run *RiboCode*
     - pval_frame0_vs_frame2: significance levels of P-site densities of frame0 greater than of frame2
     - pval_combined: integrated P-value
 
-   All the three steps above can also be easily run with a single command "RiboCode_onestep" like:
+   **All the three steps above can also be easily run with a single command "RiboCode_onestep" like:**
 
    .. code-block:: bash
 
@@ -300,11 +303,11 @@ Recipes (FAQ):
 For any questions, please contact:
 ----------------------------------
 
-   Zhengtao Xiao (xzt13[at]tsinghua.org.cn)
+Zhengtao Xiao (xzt13[at]tsinghua.org.cn)
 
-   Rongyao Huang (THUhry12[at]163.com)
+Rongyao Huang (THUhry12[at]163.com)
 
-   Xudong Xing (xudonxing_bioinf[at]sina.com)
+Xudong Xing (xudonxing_bioinf[at]sina.com)
 
 .. _SRA_Toolkit: https://trace.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?view=software
 
@@ -313,6 +316,8 @@ For any questions, please contact:
 .. _config.txt: https://github.com/xzt41/RiboCode/blob/master/data/config.txt
 
 .. _rRNA.fa: https://github.com/xzt41/RiboCode/blob/master/data/rRNA.fa
+
+.. _GTF_update.rst: https://github.com/xzt41/RiboCode/blob/master/data/GTF_update.rst
 
 .. _UNC Bioinformatics Utilities: https://github.com/mozack/ubu
 

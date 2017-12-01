@@ -1,11 +1,14 @@
 =======
 Changes
 =======
+todo in next version:
+- Supporting for python3.4+
 
 v1.2.7 (2017.7.25)
 ------------------
 - Add "--version" option to show the version number of package.
 - Add RiboCode_onestep command which performs entire steps for detecting ORFs.
+- Supporting for custom GTF file (---test if only has geneid and transcripid)
 
 v1.2.6 (2017.5.17)
 ------------------

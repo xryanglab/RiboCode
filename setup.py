@@ -143,6 +143,7 @@ setup(
     package_data = {
         'gtf_files':  ['data/gtf_files_url.txt'],
         'config_file': ['data/config.txt'],
+        'GTF_update':['data/GTF_update.rst']
     },
 
     # http://docs.python.org/3.4/distutils/setupscript.html#installing-additional-files # noqa
@@ -167,7 +168,8 @@ setup(
             'prepare_transcripts=RiboCode.prepare_transcripts:main',
             'metaplots=RiboCode.metaplots:main',
             'plot_orf_density=RiboCode.plot_orf_density:main',
-            'ORFcount=RiboCode.RPF_count_ORF:main'
+            'ORFcount=RiboCode.RPF_count_ORF:main',
+            'GTFupdate=RiboCode.GTF_update:main'
         ],
 
     },
