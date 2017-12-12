@@ -236,11 +236,11 @@ Please make sure the path of file is correct.
 
    (4). (optional) Plotting the densities of P-sites for predicted ORFs
 
-   Users can plot the density of P-sites for a ORF using the "parsing_plot_orf_density" command, as example below:
+   Users can plot the density of P-sites for a ORF using the "plot_orf_density" command, as example below:
 
    .. code-block:: bash
 
-      parsing_plot_orf_density -a <RiboCode_annot> -c <config.txt> -t (transcript_id)
+      plot_orf_density -a <RiboCode_annot> -c <config.txt> -t (transcript_id)
       -s (ORF_gstart) -e (ORF_gstop)
 
    The generated PDF plots can be edited by Adobe Illustrator.
@@ -285,7 +285,7 @@ Recipes (FAQ):
 
    .. code-block:: bash
 
-      export MPLBACKEND="module://my_backend"
+      export MPLBACKEND="module://Agg"
 
    Giving below are non-interactive backends, capable of writing to a file:
 

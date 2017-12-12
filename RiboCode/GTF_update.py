@@ -26,6 +26,8 @@ def GroupGeneSubsets(gtf_file):
 			field_dict = parsing_line(line)
 			field_dict["line"] = line
 			gid=field_dict["attr"]["gene_id"]
+			if "gene_name" not in field_dict["attr"]:
+				field_dict["attr"]["gene_name"] = gid
 			chr = field_dict["chrom"]
 			strand = field_dict["iv"].strand
 			gid0 = chr + ":"+gid+":"+strand
@@ -41,7 +43,7 @@ def GroupGeneSubsets(gtf_file):
 	for i in subsets.keys():
 		chr,gid,strand = i.split(":")
 		if gid in duplicated_gene_id:
-			stderr.write("Warnning: %s is duplicated, will be renamed as: %s\n" % (gid, i))
+			stderr.write("Warnning, gene_id is duplicated: %s , will be renamed as: %s\n" % (gid, i))
 			for j in range(len(subsets[i])):
 				subsets[i][j]["attr"]["gene_id"] = i
 	return subsets,sourted_gset_keys
@@ -75,7 +77,7 @@ def TranscriptFeature(gene_set,gattr):
 		for data in t_subsets:
 			print data["line"],
 
-def AddGeneFeature(subsets,sourted_gset_keys):
+def AddGeneFeature(subsets,sourted_gset_keys,add_transcript=True):
 	for g in sourted_gset_keys:
 		chr,gid,strand =  g.split(":")
 		ivs_set = [i["iv"] for i in subsets[g]]
@@ -89,7 +91,7 @@ def AddGeneFeature(subsets,sourted_gset_keys):
 			gend = ivs_set[0].end
 
 		source = subsets[g][0]["source"]
-		gname = subsets[g][0]["attr"]["gene_name"]
+		gname = subsets[g][0]["attr"].get("gene_name",subsets[g][0]["attr"]["gene_id"])
 		gtype = subsets[g][0]["attr"].get("gene_type",None) or subsets[g][0]["attr"].get("gene_biotype",None)
 
 		gattr = 'gene_id "%s"; gene_name "%s";' % (gid,gname)
@@ -97,13 +99,24 @@ def AddGeneFeature(subsets,sourted_gset_keys):
 			gattr += ' gene_type "%s";' % gtype
 		out_list = [chr,source,"gene",gstart,gend,".",strand,".",gattr]
 		print "\t".join(map(str,out_list))
-		TranscriptFeature(subsets[g],gattr)
+		if add_transcript:
+			TranscriptFeature(subsets[g],gattr)
+		else:
+			for data in subsets[g]:
+				print data["line"],
 
 def main():
 	from parsing_opts import parsing_gtf_update
 	args = parsing_gtf_update()
 	gset,sourted_gset_keys = GroupGeneSubsets(args.gtfFile)
-	AddGeneFeature(gset,sourted_gset_keys)
+	#if the transcript feature exists.
+	add_transcript = True
+	for i in gset[sourted_gset_keys[1]]:
+		if i["feature"] == "transcript":
+			add_transcript = False
+			break
+
+	AddGeneFeature(gset,sourted_gset_keys,add_transcript)
 
 if __name__ == "__main__":
 	main()
