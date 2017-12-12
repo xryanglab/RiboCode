@@ -16,7 +16,8 @@ def wilcoxon_greater(x, y, zero_method ="wilcox", correction = False):
 
 	if np.all(x == y):
 		return WilcoxonResult(np.nan, np.nan)
-
+	# if np.std(x) == np.std(y) == 0: # if SD is zero, all the values are same. It is pointless to do test.
+	# 	y = y[-1] + 1 # Will update in next version
 	"""
 	shamelessly stolen from scipy
 	"""

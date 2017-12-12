@@ -19,8 +19,6 @@ def filter_transcript(gene_dict,transcript_dict):
 	"""
 	filter_tids = []
 	for gobj in gene_dict.values():
-		if gobj.gene_type != "protein_coding":
-			continue
 		if gobj.chrom in ("chrM","chrMT","M","MT"):
 			continue
 		select_tid = None
@@ -158,6 +156,11 @@ def main():
 	gene_dict,transcript_dict = load_transcripts_pickle(os.path.join(args.annot_dir,"transcripts.pickle"))
 	# filter transcripts
 	filter_tids = filter_transcript(gene_dict,transcript_dict)
+	if len(filter_tids) == 0:
+		sys.stderr.write("Oops, no start codons and stop codons are found in annotation files.\n" +
+		                 "If no any start codons and stop codons are annotated in GTF file \n" +
+		                 ",please skip this step and create a config file to specify the P-site based on other evidence." )
+		sys.exit()
 	# read bam file
 	distance_to_start_count,distance_to_stop_count,length_counter = readTranscriptBam(
 		args.rpf_mapping_file,filter_tids,transcript_dict,args.stranded,args.minLength,args.maxLength)
