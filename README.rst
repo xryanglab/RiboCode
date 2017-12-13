@@ -247,8 +247,8 @@ Please make sure the path of file is correct.
 
    (5). (optional) Counting the number of RPF reads aligned to ORFs
 
-   The number of reads mapping to each ORF can be obtained by the "ORF_count" command which relying on HTSeq-count package.
-   The first few codons and last few codons of ORF with length longer than a given value can be excluded by adjusting specific parameters.
+   The number of reads mapping to each ORF can be obtained by the "ORFcount" command which relying on HTSeq-count package.
+   For the ORF with length longer than a specified value, the RPF reads in first few codons and last few codons can be excluded by adjusting the parameters.
    Only the reads of a given length will be counted. For example, the reads with length between 26-34 nt aligned to
    predicted ORF can be obtained by using below command:
 

@@ -1,8 +1,10 @@
 =======
 Changes
 =======
-todo in next version:
+todo in future version:
 - Supporting for python3.4+
+- Update test_func.py: line 19 and 20
+- Supporting for *de novo* GTF file (no annotated start and stop codons).
 
 v1.2.7 (2017.7.25)
 ------------------
