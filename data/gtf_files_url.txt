@@ -1,5 +1,0 @@
-The annotation files can be download from:
-http://www.gencodegenes.org
-or from:
-http://asia.ensembl.org/info/data/ftp/index.html
-http://useast.ensembl.org/info/data/ftp/index.html

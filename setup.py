@@ -141,7 +141,6 @@ setup(
 
     },
     package_data = {
-        'gtf_files':  ['data/gtf_files_url.txt'],
         'config_file': ['data/config.txt'],
         'GTF_update':['data/GTF_update.rst']
     },
@@ -151,7 +150,7 @@ setup(
     # In this case, 'data_file' will be installed into '<sys.prefix>/my_data'
 
     #TODO data file?
-    #data_files=[('gtf_files', ['data/gtf_files_url.txt']),('config_file',['data/config.txt'])],
+    #data_files=[('config_file',['data/config.txt'])],
 
     # To provide executable scripts, use entry points in preference to the
 

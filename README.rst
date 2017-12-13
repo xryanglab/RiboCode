@@ -101,13 +101,17 @@ Please make sure the path of file is correct.
 
    http://useast.ensembl.org/info/data/ftp/index.html
 
-   or you can use "GTFupdate" in *RiboCode* to update you GTF file, see `GTF_update.rst`_
 
    For example, the required files in this tutorial can be downloaded from following URL:
 
    GTF: ftp://ftp.sanger.ac.uk/pub/gencode/Gencode_human/release_19/gencode.v19.annotation.gtf.gz
 
    FASTA: ftp://ftp.sanger.ac.uk/pub/gencode/Gencode_human/release_19/GRCh37.p13.genome.fa.gz
+
+   **Note**: *RiboCode* requires the GTF file which includes the three-level hierarchy
+   annotations (genes,transcripts, and exons). Some GTF files may lack the gene and transcript
+   annotation information. Users can use "GTFupdate" command in *RiboCode* to add the missing information,
+   please refer to `GTF_update.rst`_ for more information.
 
    The raw Ribo-seq FASTQ file can be download by using fastq-dump tool from `SRA_Toolkit`_:
 
