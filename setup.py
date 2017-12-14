@@ -19,9 +19,9 @@ here = path.abspath(path.dirname(__file__))
 
 # Get the long description from the README file
 
-with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
-    long_description = f.read()
-
+# with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
+#     long_description = f.read()
+long_description = 'RiboCode is a very simple but high-quality computational algorithm to identify genome-wide translated ORFs using ribosome-profiling data.'
 
 setup(
 
