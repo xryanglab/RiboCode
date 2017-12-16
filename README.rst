@@ -325,17 +325,17 @@ Xudong Xing (xudonxing_bioinf[at]sina.com)
 
 .. _UNC Bioinformatics Utilities: https://github.com/mozack/ubu
 
-.. |Build Status| image:: https://img.shields.io/travis/xzt41/RiboCode/master.svg?style=plastic
+.. |Build Status| image:: https://img.shields.io/travis/xzt41/RiboCode/master.svg?style=flat-square
    :target: https://travis-ci.org/xzt41/RiboCode
 
-.. |PyPI| image:: https://img.shields.io/pypi/v/RiboCode.svg?style=plastic
+.. |PyPI| image:: https://img.shields.io/pypi/v/RiboCode.svg?style=flat-square
    :target: https://pypi.python.org/pypi/RiboCode
 
-.. |Python Versions| image:: https://img.shields.io/pypi/pyversions/RiboCode.svg?style=plastic
+.. |Python Versions| image:: https://img.shields.io/pypi/pyversions/RiboCode.svg?style=flat-square
    :target: https://pypi.python.org/pypi/RiboCode
 
-.. |BioConda| image:: https://img.shields.io/badge/install-bioconda-green.svg?style=plastic
+.. |BioConda| image:: https://img.shields.io/badge/install-bioconda-green.svg?style=flat-square
    :target: http://bioconda.github.io/recipes/ribocode/README.html
 
-.. |downloads| image:: https://anaconda.org/bioconda/ribocode/badges/downloads.svg?style=plastic
+.. |downloads| image:: https://anaconda.org/bioconda/ribocode/badges/downloads.svg
    :target: https://anaconda.org/bioconda/ribocode
