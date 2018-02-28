@@ -1,7 +1,13 @@
 #!/usr/bin/env python
+from __future__ import division
+from __future__ import absolute_import
+from __future__ import print_function
+from builtins import str, map, range
+
 # -*- coding:UTF-8 -*-
 __author__ = 'Zhengtao Xiao'
-from prepare_transcripts import *
+
+from .prepare_transcripts import *
 from collections import defaultdict
 from sys import stderr
 # perform various operations to generate the standard GTF file
@@ -28,9 +34,9 @@ def GroupGeneSubsets(gtf_file):
 			gid=field_dict["attr"]["gene_id"]
 			if "gene_name" not in field_dict["attr"]:
 				field_dict["attr"]["gene_name"] = gid
-			chr = field_dict["chrom"]
+			chrom = field_dict["chrom"]
 			strand = field_dict["iv"].strand
-			gid0 = chr + ":"+gid+":"+strand
+			gid0 = chrom + ":"+gid+":"+strand
 			subsets[gid0].append(field_dict)
 			if gid0 not in sourted_gset_keys_set:
 				sourted_gset_keys_set.add(gid0)
@@ -41,7 +47,7 @@ def GroupGeneSubsets(gtf_file):
 	duplicated_gene_id = [i for i in gene_id_uniq if gene_id_list.count(i) >1]
 	duplicated_gene_id = set(duplicated_gene_id)
 	for i in subsets.keys():
-		chr,gid,strand = i.split(":")
+		chrom,gid,strand = i.split(":")
 		if gid in duplicated_gene_id:
 			stderr.write("Warnning, gene_id is duplicated: %s , will be renamed as: %s\n" % (gid, i))
 			for j in range(len(subsets[i])):
@@ -51,7 +57,7 @@ def GroupGeneSubsets(gtf_file):
 def TranscriptFeature(gene_set,gattr):
 	tid_set = [i["attr"]["transcript_id"] for i in gene_set]
 	tid_set=set(tid_set)
-	chr = gene_set[0]["chrom"]
+	chrom = gene_set[0]["chrom"]
 	for tid in tid_set:
 		t_subsets = [i for i in gene_set if i["attr"]["transcript_id"] == tid]
 		ivs_set = [i["iv"] for i in t_subsets]
@@ -71,15 +77,15 @@ def TranscriptFeature(gene_set,gattr):
 		tattr = gattr + ' transcript_id "%s";' % tid
 		if ttype:
 			tattr += ' transcript_type "%s";' % ttype
-		out_list = [chr,source,"transcript",tstart,tend,".",strand,".",tattr]
-		print "\t".join(map(str,out_list))
+		out_list = [chrom,source,"transcript",tstart,tend,".",strand,".",tattr]
+		print("\t".join(map(str,out_list)))
 
 		for data in t_subsets:
-			print data["line"],
+			print(data["line"],end='')
 
 def AddGeneFeature(subsets,sourted_gset_keys,add_transcript=True):
 	for g in sourted_gset_keys:
-		chr,gid,strand =  g.split(":")
+		chrom,gid,strand =  g.split(":")
 		ivs_set = [i["iv"] for i in subsets[g]]
 		if strand == "+":
 			ivs_set.sort(key=lambda x: x.start, reverse=False)
@@ -97,16 +103,16 @@ def AddGeneFeature(subsets,sourted_gset_keys,add_transcript=True):
 		gattr = 'gene_id "%s"; gene_name "%s";' % (gid,gname)
 		if gtype:
 			gattr += ' gene_type "%s";' % gtype
-		out_list = [chr,source,"gene",gstart,gend,".",strand,".",gattr]
-		print "\t".join(map(str,out_list))
+		out_list = [chrom,source,"gene",gstart,gend,".",strand,".",gattr]
+		print("\t".join(map(str,out_list)))
 		if add_transcript:
 			TranscriptFeature(subsets[g],gattr)
 		else:
 			for data in subsets[g]:
-				print data["line"],
+				print(data["line"],end='')
 
 def main():
-	from parsing_opts import parsing_gtf_update
+	from .parsing_opts import parsing_gtf_update
 	args = parsing_gtf_update()
 	gset,sourted_gset_keys = GroupGeneSubsets(args.gtfFile)
 	#if the transcript feature exists.

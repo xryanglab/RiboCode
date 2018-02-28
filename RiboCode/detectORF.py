@@ -1,14 +1,17 @@
 #!/usr/bin/env python
 from __future__ import division
+from __future__ import absolute_import
+from __future__ import print_function
+from builtins import str, zip, map, range
 # -*- coding:UTF-8 -*-
 __author__ = 'Zhengtao Xiao'
 
-from test_func import wilcoxon_greater,combine_pvals
-from prepare_transcripts import *
-from translate_dna import translation
-from orf_finder import orf_finder
+from .test_func import wilcoxon_greater,combine_pvals
+from .prepare_transcripts import *
+from .translate_dna import translation
+from .orf_finder import orf_finder
 from collections import OrderedDict,defaultdict
-from pie_plot import pie
+from .pie_plot import pie
 import numpy as np
 import os
 import sys
@@ -84,7 +87,7 @@ def start_check(commonstop_dict, only_longest_orf, tpsites, pval_cutoff):
 	automatically determine the start codon
 	"""
 	candicate_orf_list = []
-	for stop,start_list in commonstop_dict.iteritems():
+	for stop,start_list in commonstop_dict.items():
 		# if np.sum(tpsites[start_list[0]:stop:3]) < 10:
 		# 	continue
 		start_num = len(start_list)
@@ -93,7 +96,7 @@ def start_check(commonstop_dict, only_longest_orf, tpsites, pval_cutoff):
 			start = start_list[0]
 			candicate_orf_list.append(Interval(start,stop,"+"))
 			continue
-		for start_idx in xrange(start_num):
+		for start_idx in range(start_num):
 			cur_start = start_list[start_idx]
 			if start_idx == start_num -1:
 				next_start = stop
@@ -114,7 +117,7 @@ def start_check(commonstop_dict, only_longest_orf, tpsites, pval_cutoff):
 			else:
 				d1_pos = d1_neg = 0
 				d2_pos = d2_neg = 0
-				for i in xrange(f0_downstream.size):
+				for i in range(f0_downstream.size):
 					if f0_downstream[i] == f1_downstream[i] == 0:
 						pass
 					elif f0_downstream[i] > f1_downstream[i]:
@@ -150,11 +153,11 @@ def ORF_record(only_ATG=True):
 
 def write_result(orf_results,outname):
 
-	header = "\t".join(orf_results[0].keys()[:-1])
+	header = "\t".join(list(orf_results[0].keys())[:-1])
 	with open(outname + '.txt',"w") as fout:
 		fout.write(header + "\n")
 		for v in orf_results:
-			fout.write("\t".join(map(str,v.values()[:-1])) + "\n")
+			fout.write("\t".join(map(str,list(v.values())[:-1])) + "\n")
 
 def write_to_gtf(gene_dict, transcript_dict, orf_results, collapsed_orf_idx, outname):
 	"""
@@ -292,9 +295,9 @@ def main(gene_dict, transcript_dict, annot_dir, tpsites_sum, total_psites_number
 	tid_num = len(transcript_dict)
 	counts = 0
 	transcript_reads_count = {}
-	for i,tid in enumerate(transcript_dict.iterkeys()):
+	for i,tid in enumerate(transcript_dict.keys()):
 		if i % 1000 == 0:
-			sys.stderr.write(percentage_format(i / tid_num,decimal=0) + " has finished! \r")
+			sys.stderr.write(percentage_format(i / tid_num, decimal=0) + " has finished! \r")
 
 		tobj = transcript_dict[tid]
 		tpsites = tpsites_sum[tid]
@@ -375,14 +378,14 @@ def main(gene_dict, transcript_dict, annot_dir, tpsites_sum, total_psites_number
 	sys.stdout.write("\n\tWriting the results to file .....\n")
 	write_result(orf_results,outname)
 	fout = open(outname + "_collapsed.txt","w")
-	header = "\t".join(orf_results[0].keys()[:-1])
+	header = "\t".join(list(orf_results[0].keys())[:-1])
 	fout.write(header + "\n")
 	ORFs_category_dict = OrderedDict()
 	for k in ["annotated","uORF","dORF","Overlapped","novel_PCGs","novel_NonPCGs"]:
 		ORFs_category_dict[k] = set()
 
 	collapsed_orf_idx = set()
-	for gobj in gene_dict.itervalues():
+	for gobj in gene_dict.values():
 		orf_transcript_dict = {} #key is orf_gstop, value is tid,orf_gstart,orf_f0_sum,orf index
 		ccds_tids = []
 
@@ -417,7 +420,7 @@ def main(gene_dict, transcript_dict, annot_dir, tpsites_sum, total_psites_number
 				else:
 					orf_transcript_dict[orf_gstop] = (tid,orf_gstart,orf["Psites_sum_frame0"],i)
 
-		for v in orf_transcript_dict.itervalues():
+		for v in orf_transcript_dict.values():
 			_,_,_,orf_idx = v
 			orf = orf_results[orf_idx]
 			collapsed_orf_idx.add(orf_idx)
@@ -434,11 +437,11 @@ def main(gene_dict, transcript_dict, annot_dir, tpsites_sum, total_psites_number
 			else:
 				ORFs_category_dict["novel_NonPCGs"].add(gobj.gene_id)
 
-			fout.write("\t".join(map(str,orf.values()[:-1])) + "\n")
+			fout.write("\t".join(map(str,list(orf.values())[:-1])) + "\n")
 
 	fout.close()
 	ORFs_category_dict2 = OrderedDict()
-	for k in ORFs_category_dict.iterkeys():
+	for k in ORFs_category_dict.keys():
 		num = len(ORFs_category_dict[k])
 		if num >0: ORFs_category_dict2[k] = num
 	try:

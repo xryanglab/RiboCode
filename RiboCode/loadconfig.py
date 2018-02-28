@@ -1,11 +1,14 @@
 #!/usr/bin/env python
+from __future__ import division
+from __future__ import absolute_import
+from __future__ import print_function
+from builtins import map, zip, range,object
 # -*- coding:UTF-8 -*-
 __author__ = 'Zhengtao Xiao'
 """
 loading and preparing the data
 """
 import sys
-
 class LoadConfig(object):
 	"""
 	Read the ribosome profiling alignment information from config file,
@@ -29,12 +32,12 @@ class LoadConfig(object):
 				samplename, bamfile, stranded, plen, psite = line.strip().split()
 				if "-" in plen:
 					p_s,p_e = plen.split("-")
-					plen = range(int(p_s),int(p_e) + 1)
+					plen = list(range(int(p_s),int(p_e) + 1))
 				else:
 					plen = plen.strip().split(",")
 				psite = psite.strip().split(",")
-				plen = map(int,plen)
-				psite = map(int,psite)
+				plen = list(map(int,plen))
+				psite = list(map(int,psite))
 				if len(plen) != len(psite):
 					sys.stderr.write("Error, pleas check you config file\n, \
 					                  the number of read lengths and P-site offsets is different! \
@@ -52,7 +55,7 @@ class LoadConfig(object):
 					sys.stderr.wirte("Error, pls check you config file\n, bam file name is duplicated: %s.\n" % samplename)
 					sys.exit()
 				samplenames.append(samplename)
-				self.configList.append( dict(zip(["samplename","filepath","stranded","psites_dict"],
+				self.configList.append(dict(zip(["samplename","filepath","stranded","psites_dict"],
 				                                 [samplename,bamfile,stranded,dict(zip(plen,psite))])) )
 				i += 1
 		if i == 0:

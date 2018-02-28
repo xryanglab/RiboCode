@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+from __future__ import division
+from __future__ import absolute_import
+from __future__ import print_function
 # -*- coding:UTF-8 -*-
 __author__ = 'Zhengtao Xiao'
 
@@ -31,10 +34,10 @@ def orf_find(start_idx,stop_idx,alt_start_idx,MIN_AA_LENGTH):
 	"""
 	commonstop_dict = {}
 	for f in (0,1,2):
-		inframe_stops = filter(lambda x: x%3==f, stop_idx)
-		inframe_starts = filter(lambda x: x%3==f, start_idx)
+		inframe_stops = [x for x in stop_idx if x%3==f]
+		inframe_starts = [x for x in start_idx if x%3==f]
 		if alt_start_idx:
-			inframe_alt_starts = filter(lambda x: x%3==f, alt_start_idx)
+			inframe_alt_starts = [x for x in alt_start_idx if x%3==f]
 		else:
 			inframe_alt_starts = None
 

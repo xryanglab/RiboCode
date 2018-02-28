@@ -1,10 +1,13 @@
 #!/usr/bin/env python
+from __future__ import division
+from __future__ import absolute_import
+from __future__ import print_function
 # -*- coding:UTF-8 -*-
 __author__ = 'Zhengtao Xiao'
 
 import argparse
 import os
-from __init__ import __version__
+from .__init__ import __version__
 
 def parsing_gtf_update():
 	parser = argparse.ArgumentParser(
@@ -230,6 +233,12 @@ def parsing_ribo_onestep():
 	parser.add_argument("-stranded","--stranded",dest="stranded",required=False,type=str,choices=["yes","reverse"],
 	                    default="yes",help="whether the data is strand-specific, \
 	                    reverse means reversed strand interpretation.(default: yes)")
+	parser.add_argument("-m","--minimum-length",dest="minLength",required=False,type=int,default=24,
+	                    help="minimum read length for metaplots analysis, default 24")
+	parser.add_argument("-M","--maximum-length",dest="maxLength",required=False,type=int,default=36,
+	                    help="maximum read length for metaplots analysis, default 36")
+	parser.add_argument("-f0_percent","--frame0_percent",dest="frame0_percent",required=False,type=float,default=0.65,
+	                    help="proportion threshold of reads in frame0. For automatically predicting P-site location, default 0.65")
 	parser.add_argument("-l","--longest-orf",dest="longest_orf",choices=["yes","no"],default="yes",required=False,
 	                    help="Default: yes, the region from most distal AUG to stop was defined as an ORF. \
 	                          If set to no , the position of start codon will be automatically determined by program.", type=str)
@@ -244,7 +253,7 @@ def parsing_ribo_onestep():
 	parser.add_argument("-t","--transl_table",default=1,dest="transl_table",type=int,
 	                    help="ORF translation table(Default: 1). Assign the correct genetic code based on your organism, \
 	                    [please refer: https://www.ncbi.nlm.nih.gov/Taxonomy/Utils/wprintgc.cgi]")
-	parser.add_argument("-m","--min-AA-length",dest="min_AA_length",default="20",required=False,
+	parser.add_argument("-mA","--min-AA-length",dest="min_AA_length",default="20",required=False,
 	                    help="The minimal length of predicted peptides,default 20", type=int)
 	# parser.add_argument("-P","--parallel_num",dest="parallel_num",default=1,required=False,
 	#                     help="the number of threads to read the alignment file(s), \
@@ -260,5 +269,10 @@ def parsing_ribo_onestep():
 	if not os.path.exists(args.rpf_mapping_file):
 		raise  ValueError("Error, the rpf mapping file not found: %s\n" % args.rpf_mapping_file)
 	args.stranded = True if args.stranded == "yes" else False
+	if args.minLength > args.maxLength:
+		raise ValueError("minimum length must be <= maximum length (currently %d and %d, respectively)" % (args.minLength, args.maxLength))
+	if args.minLength <= 0 or  args.maxLength <=0:
+		raise ValueError("minimum length or maximum length must be larger than 0.")
+	args.frame0_percent = float(args.frame0_percent)
 
 	return args

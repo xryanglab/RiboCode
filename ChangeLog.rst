@@ -1,16 +1,20 @@
 =======
 Changes
 =======
-todo in future version:
-- Supporting for python3.4+
-- Update test_func.py: line 19 and 20
+todo in future versions:
 - Supporting for *de novo* GTF file (no annotated start and stop codons).
+
+v1.2.8 (2017.12.30)
+-------------------
+- Supporting for Python3
+- Small changes in test_func.py
+- Update metaplot script
 
 v1.2.7 (2017.7.25)
 ------------------
 - Add "--version" option to show the version number of package.
 - Add RiboCode_onestep command which performs entire steps for detecting ORFs.
-- Supporting for custom GTF file (---test if only has geneid and transcripid)
+- Supporting for custom GTF file
 
 v1.2.6 (2017.5.17)
 ------------------

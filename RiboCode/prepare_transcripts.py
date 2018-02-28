@@ -1,22 +1,27 @@
 #!/usr/bin/env python
+from __future__ import division
+from __future__ import absolute_import
+from __future__ import print_function
+from builtins import range,object
 # -*- coding:UTF-8 -*-
-
 """
 preparing the transcripts annotation files.
 """
-import cPickle as pickle
-import os
 import sys
+if sys.version_info.major ==2:
+	import cPickle as pickle
+else:
+	import pickle
+	from sys import intern
+import os
 from pyfasta import Fasta
 from time import strftime
 
 class ParsingError(Exception):
 	pass
 
-class Interval:
+class Interval(object):
 	""" basic interval """
-	__slots__ = ("start","end","strand","start_d","end_d","length")
-
 	def __init__(self,start,end,strand):
 		if end < start:
 			raise ValueError('Error: end smaller than start !')
@@ -97,10 +102,8 @@ def parsing_line(line):
 	field_dict = {"chrom": intern(chrom),"source":source,"feature": intern(feature),"iv":iv,"attr":parsing_attr(attr)}
 	return field_dict
 
-class Gene:
+class Gene(object):
 	""" Gene object """
-
-	__slots__ = ("chrom","genomic_iv","attr", "gene_id","gene_name","gene_type","transcripts","principal_transcripts")
 
 	def __init__(self,field_dict):
 		self.chrom = field_dict["chrom"]
@@ -117,12 +120,8 @@ class Gene:
 
 	__repr__ = __str__
 
-class Transcript:
+class Transcript(object):
 	""" Transcript object """
-
-	__slots__ = ("chrom","genomic_iv","attr","gene_id","gene_name","transcript_id","transcript_type",
-	             "genomic_exons","genomic_cds","genomic_startcodon","genomic_stopcodon",
-	             "cds","startcodon","stopcodon","length")
 
 	def __init__(self,field_dict):
 		self.chrom = field_dict["chrom"]
@@ -198,10 +197,8 @@ def get_chrom(name):
 	else:
 		return name
 
-class GenomeSeq:
+class GenomeSeq(object):
 	""" genomic sequence"""
-
-	__slots__ = ("filename","fh")
 
 	def __init__(self,filename):
 		self.filename = filename
@@ -282,7 +279,7 @@ def transcript_iv_transform(tobj, transcript_iv):
 
 	exons_bound.append(genomic_end)
 	if len(exons_bound) % 2 != 0:
-		print "error when transform the transcript interval to genomic!"
+		print("error when transform the transcript interval to genomic!")
 	exons_ivs = []
 	for i in range(0,len(exons_bound),2):
 		exons_ivs.append(Interval_from_directional(exons_bound[i],exons_bound[i+1],strand))
@@ -385,8 +382,8 @@ def verboseprint(printstring):
 
 
 def main():
-	import parsing_opts
-	args = parsing_opts.parsing_transcript()
+	from .parsing_opts import parsing_transcript
+	args = parsing_transcript()
 	verboseprint("Preparing annotation files ...")
 	processTranscripts(args.genomeFasta,args.gtfFile,args.out_dir)
 	verboseprint("The step of preparing transcript annotation has been completed.")

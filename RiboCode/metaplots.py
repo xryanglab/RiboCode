@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 from __future__ import division
+from __future__ import absolute_import
+from __future__ import print_function
+from builtins import map,range
 # -*- coding:UTF-8 -*-
 __author__ = 'Zhengtao Xiao'
 
@@ -8,8 +11,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pysam
 from matplotlib.backends.backend_pdf import PdfPages
-from prepare_transcripts import *
-from detectORF import extract_frame,test_frame
+from .prepare_transcripts import *
+from .detectORF import extract_frame,test_frame
+from .parsing_opts import parsing_metaplots
 import os
 import sys
 
@@ -97,7 +101,7 @@ def readTranscriptBam(bamFile,filter_tids,transcript_dict,stranded,minLength,max
 
 
 def distancePlot(distance_to_start_count,distance_to_stop_count,pre_psite_dict,length_counter,outname):
-	length_set = set(distance_to_start_count.keys() + distance_to_stop_count.keys())
+	length_set = set(list(distance_to_start_count.keys()) + list(distance_to_stop_count.keys()))
 	total_reads = sum(length_counter.values())
 	with PdfPages(outname + ".pdf") as pdf:
 		x = np.arange(-50,51,dtype=int)
@@ -107,7 +111,7 @@ def distancePlot(distance_to_start_count,distance_to_stop_count,pre_psite_dict,l
 			if l not in pre_psite_dict:
 				xticks = [-40,-20,0,20,40]
 			else:
-				xticks = sorted([-40,-20,0,20,40] + pre_psite_dict[l] -50)
+				xticks = sorted([-40,-20,0,20,40] + [pre_psite_dict[l] -50])
 			perct = '{:.2%}'.format(length_counter[l] / total_reads)
 			fig,(ax1,ax2) = plt.subplots(nrows=2,ncols=1)
 			y1 = distance_to_start_count[l]
@@ -146,14 +150,31 @@ def lengthDistribution(length_counter,outname):
 
 def _write_to_file(distance_dict,filename):
 	with open(filename,"w") as fout:
-		for k,v in distance_dict.iteritems():
+		for k,v in distance_dict.items():
 			fout.write("%i:\t%s\n" % (k,"\t".join(map(str,v))))
 
-def main():
-	import parsing_opts
-	args = parsing_opts.parsing_metaplots()
-	# load gene dict and transcript dict
-	gene_dict,transcript_dict = load_transcripts_pickle(os.path.join(args.annot_dir,"transcripts.pickle"))
+def _predict_psite(rlength,rdensity,frame0_percent_cutoff,pv1_cutoff,pv2_cutoff):
+	predict_psite = None
+	others = [] #f0sum,f1sum,f2sum,f0_percent,pv1,pv2,pv
+	tmp_f0sum = 0
+	for i in range(4,min(rlength,20)):
+		idx = 50 - i
+		f0,f1,f2 = extract_frame(rdensity[idx:idx+51])
+		if f0.sum() < 10:
+			continue
+		f0_percent = f0.sum() / (f0.sum() + f1.sum() + f2.sum())
+		pv1,pv2,pv = test_frame(f0, f1, f2)
+		if f0_percent < frame0_percent_cutoff:
+			continue
+		if (pv1.pvalue < pv1_cutoff) and (pv2.pvalue < pv2_cutoff):
+			if f0.sum() > tmp_f0sum:
+				predict_psite = idx
+				tmp_f0sum = f0.sum()
+				others=[f0.sum(),f1.sum(),f2.sum(),f0_percent,pv1.pvalue,pv2.pvalue,pv]
+	return predict_psite,others
+
+
+def meta_analysis(gene_dict,transcript_dict,args):
 	# filter transcripts
 	filter_tids = filter_transcript(gene_dict,transcript_dict)
 	if len(filter_tids) == 0:
@@ -168,33 +189,29 @@ def main():
 	pre_psite_dict = {}
 	total_reads = sum(length_counter.values())
 	fout = open(args.outname + "_pre_config.txt", "w")
-	fout.write("#read_length\tproportion(per total mapped reads)\tpredicted_psite\tnumber_of_codons_chosen\tf0_sum\tf1_sum\t_f2_sum\tf0_percent\tpvalue1\tpvalue2\tpvalue_combined\n")
-	for l,d in distance_to_start_count.iteritems():
+	fout.write("#read_length\tproportion(per total mapped reads)\tpredicted_psite\tf0_sum\tf1_sum\tf2_sum\tf0_percent\tpvalue1\tpvalue2\tpvalue_combined\n")
+	for l,d in distance_to_start_count.items():
 		if d.sum() < 10:
 			continue
-		pre_psite = d[:50].argmax()
-		f0,f1,f2 = extract_frame(d[pre_psite:])
-		if f0.sum() < 10:
-			continue
-		pv1,pv2,pv = test_frame(f0, f1, f2)
-		f0_percent = f0.sum() / (f0.sum() + f1.sum() + f2.sum())
-		if f0_percent < args.frame0_percent:
-			continue
-		if (pv1.pvalue < args.pvalue1_cutoff) and (pv2.pvalue <  args.pvalue2_cutoff):
+		mask_max_psite = d[:50].argmax()
+		predict_psite,others = _predict_psite(l,d,args.frame0_percent,args.pvalue1_cutoff,args.pvalue2_cutoff)
+		if predict_psite:
+			if mask_max_psite != predict_psite:
+				sys.stderr.write("Warning:The predicted P-site location(%i) for length %i is not the highest peak(%i),\
+				                 please confirm according metagene plots.\n" % (50-predict_psite,l,50-mask_max_psite))
 			read_percent = '{:.2%}'.format(length_counter[l] / total_reads)
-			if length_counter[l] / total_reads >= 0.05:
-				pre_psite_dict[l] = pre_psite
-			num_of_codons = len(f0)
-			fout.write("# " + "\t".join(map(str,[l,read_percent,-pre_psite+50,num_of_codons,f0.sum(),f1.sum(),f2.sum(),
-			                                     '{:.2%}'.format(f0_percent),pv1.pvalue,pv2.pvalue,pv])) + "\n")
+			pre_psite_dict[l] = predict_psite
+			f0sum,f1sum,f2sum,f0_percent,pv1,pv2,pv = others
+			fout.write("# " + "\t".join(map(str,[l,read_percent,50-predict_psite,f0sum,f1sum,f2sum,
+			                                     '{:.2%}'.format(f0_percent),pv1,pv2,pv])) + "\n")
 
 	#print the psite lines
 	fout.write("\n")
 	if pre_psite_dict:
 		fout.write("# " + "\t".join(["SampleName","AlignmentFile","Stranded(yes/reverse)","P-siteReadLength","P-siteLocations"]) + "\n")
 		stranded = "yes" if args.stranded is True else "reverse"
-		pre_psite_len = map(str,sorted(pre_psite_dict.keys()))
-		pre_psite_loc = map(str,[-pre_psite_dict[i]+50 for i in sorted(pre_psite_dict.keys())])
+		pre_psite_len = list(map(str,sorted(pre_psite_dict.keys())))
+		pre_psite_loc = list(map(str,[-pre_psite_dict[i]+50 for i in sorted(pre_psite_dict.keys())]))
 		sampleName = os.path.splitext(os.path.basename(args.rpf_mapping_file))[0]
 		fout.write("\t".join(map(str,[sampleName,args.rpf_mapping_file,stranded,",".join(pre_psite_len),",".join(pre_psite_loc)])) + "\n")
 		fout.close()
@@ -202,13 +219,19 @@ def main():
 		#lengthDistribution(length_counter,args.outname)
 	else:
 		distancePlot(distance_to_start_count,distance_to_stop_count,pre_psite_dict,length_counter,args.outname)
-		sys.stderr.write("No periodic read lengths and P-site locations were found.\n" +
-		                 "Can't detect obvious periodicity from alignment reads in annotated start codons,\n" +
+		sys.stderr.write("No obviously periodicity were detected from alignment reads in annotated start codons,\n" +
 		                 "it could be due to poor quality sequencing.\n" +
-		                 "Or you can check the metaplot file generated by this program and select the periodic reads by yourself.")
-		
-if __name__ == "__main__":
-	verboseprint("Create metaplot file and Estimate the P-site locations ...")
-	main()
-	verboseprint("Complete estimation of the P-site locations")
+		                 "Please check the metagene plots and try again by lowering the value of frame0_percent")
 
+
+def main():
+	verboseprint("Create metaplot file and predict the P-site locations ...")
+	# load gene dict and transcript dict
+	args = parsing_metaplots()
+	gene_dict,transcript_dict = load_transcripts_pickle(os.path.join(args.annot_dir,"transcripts.pickle"))
+	meta_analysis(gene_dict,transcript_dict,args)
+	verboseprint("Complete prediction of the P-site locations")
+
+
+if __name__ == "__main__":
+	main()

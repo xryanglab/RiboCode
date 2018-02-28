@@ -11,9 +11,13 @@ https://github.com/pypa/sampleproject
 # Always prefer setuptools over distutils
 
 from setuptools import setup, find_packages
-from codecs import open
 from os import path
 from RiboCode import __version__
+import sys
+
+if sys.version_info[0] == 2 and sys.version_info[1] < 6:
+    sys.stderr.write("RiboCode support >Python2.7 or 3")
+    sys.exit(1)
 
 here = path.abspath(path.dirname(__file__))
 
@@ -43,14 +47,13 @@ setup(
     long_description=long_description,
 
     # The project's main homepage.
-    #TODO fix url 
     url='https://github.com/xzt41/RiboCode',
 
     # Author details
     author='Zhengtao Xiao',
 
     #TODO fix email
-    author_email='xzt13@mails.tsinghua.edu.cn',
+    author_email='xzt13@tsinghua.org.cn',
 
     # Choose your license
     #TODO determine a proper license
@@ -67,7 +70,7 @@ setup(
 
         #   5 - Production/Stable
 
-        'Development Status :: 2 - Pre-Alpha',
+        'Development Status :: 5 - Production/Stable',
 
         # Indicate who your project is intended for
 
@@ -84,8 +87,7 @@ setup(
         # that you indicate whether you support Python 2, Python 3 or both.
 
         'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.6',
-        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3',
 
     ],
 
@@ -121,25 +123,8 @@ setup(
 
     # https://packaging.python.org/en/latest/requirements.html
 
-    install_requires=['pysam>0.8.4','matplotlib','numpy','scipy','pyfasta','biopython','h5py','htseq'],
+    install_requires=['pysam>0.8.4','matplotlib','numpy','scipy','pyfasta','biopython','h5py','htseq','future'],
 
-
-    # List additional groups of dependencies here (e.g. development
-
-    # dependencies). You can install these using the following syntax,
-
-    # for example:
-
-    # $ pip install -e .[dev,data]
-
-    extras_require={
-
-        # 'dev': ['check-manifest'],
-        # 'dev': [],
-        # 'data': ['coverage'],
-        # 'data': [],
-
-    },
     package_data = {
         'config_file': ['data/config.txt'],
         'GTF_update':['data/GTF_update.rst']
@@ -149,8 +134,6 @@ setup(
 
     # In this case, 'data_file' will be installed into '<sys.prefix>/my_data'
 
-    #TODO data file?
-    #data_files=[('config_file',['data/config.txt'])],
 
     # To provide executable scripts, use entry points in preference to the
 

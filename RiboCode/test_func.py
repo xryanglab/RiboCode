@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 from __future__ import division
-
+from __future__ import absolute_import
+from __future__ import print_function
 # -*- coding:UTF-8 -*-
 __author__ = 'Zhengtao Xiao'
 from collections import namedtuple
@@ -14,14 +15,13 @@ def wilcoxon_greater(x, y, zero_method ="wilcox", correction = False):
 	data if x is larger than y, single-sided.
 	"""
 
-	if np.all(x == y):
+	if np.allclose(x,y,equal_nan=True):
 		return WilcoxonResult(np.nan, np.nan)
-	# if np.std(x) == np.std(y) == 0: # if SD is zero, all the values are same. It is pointless to do test.
-	# 	y = y[-1] + 1 # Will update in next version
 	"""
 	shamelessly stolen from scipy
 	"""
-	if len(x) < 10:
+	if len(x) < 10 and not (np.allclose(x,x[0]) and np.allclose(y,y[0])):
+		#sample size too small, using the ttest
 		t_statistic,t_pvalue = ttest_1samp(x-y,popmean=0)
 		if np.mean(x-y) >0:
 			t_pvalue /= 2.0
@@ -39,7 +39,7 @@ def wilcoxon_greater(x, y, zero_method ="wilcox", correction = False):
 		if len(x) != len(y):
 			raise ValueError('Unequal N in wilcoxon.  Aborting.')
 		d = x - y
-		d[(d==0) & (x+y!=0)]=-1
+		d[(d==0) & (x+y!=0)] = -1 #penalty for equal value
 
 
 	if zero_method == "wilcox":
@@ -59,8 +59,7 @@ def wilcoxon_greater(x, y, zero_method ="wilcox", correction = False):
 		r_plus += r_zero / 2.
 		r_minus += r_zero / 2.
 
-	#T = min(r_plus, r_minus)
-	T = r_plus
+	T = min(r_plus, r_minus)
 	mn = count * (count + 1.) * 0.25
 	se = count * (count + 1.) * (2. * count + 1.)
 
@@ -75,7 +74,10 @@ def wilcoxon_greater(x, y, zero_method ="wilcox", correction = False):
 	se = np.sqrt(se / 24)
 	correction = 0.5 * int(bool(correction)) * np.sign(T - mn)
 	z = (T - mn - correction) / se
-	prob =  distributions.norm.sf(z)
+	if r_plus > r_minus:
+		prob = distributions.norm.sf(abs(z))
+	else:
+		prob = 1-distributions.norm.sf(abs(z))
 
 	return WilcoxonResult(T, prob)
 

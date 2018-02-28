@@ -1,4 +1,8 @@
 #!/usr/bin/env python
+from __future__ import division
+from __future__ import absolute_import
+from __future__ import print_function
+
 # -*- coding:UTF-8 -*-
 __author__ = 'Zhengtao Xiao'
 
@@ -129,8 +133,8 @@ def count_reads(start_codon_sites,stop_codon_sites,ORF_features,counts,map_file,
 	return counts
 
 def main():
-	from parsing_opts import parsing_ORF_count
-	from prepare_transcripts import verboseprint
+	from .parsing_opts import parsing_ORF_count
+	from .prepare_transcripts import verboseprint
 	args = parsing_ORF_count()
 	verboseprint("Reading the GTF file ...")
 

@@ -1,4 +1,8 @@
 #!/usr/bin/env python
+from __future__ import division
+from __future__ import absolute_import
+from __future__ import print_function
+
 # -*- coding:UTF-8 -*-
 __author__ = 'Zhengtao Xiao'
 
@@ -10,16 +14,16 @@ Details:
 	Type "RiboCode.py -h" to get the help information.
 """
 import os
-from prepare_transcripts import *
+from .prepare_transcripts import *
 def main():
 	"""
 	Master function to call different functionalities of RiboCode
 	"""
 	import sys
 
-	from parsing_opts import parsing_ribo
+	from .parsing_opts import parsing_ribo
 	args = parsing_ribo()
-	from loadconfig import LoadConfig
+	from .loadconfig import LoadConfig
 	# read the config file
 	configIn = LoadConfig(args.config_file)
 
@@ -28,13 +32,13 @@ def main():
 		sys.stderr.write("Error, the annotation directory not exists, pls run prepare_transcript.py first!\n")
 		sys.exit()
 	else:
-		from prepare_transcripts import load_transcripts_pickle
+		from .prepare_transcripts import load_transcripts_pickle
 		gene_dict, transcript_dict = load_transcripts_pickle(os.path.join(args.annot_dir,"transcripts.pickle"))
 
 	#  reading the bam file
-	import process_bam
+	from . import process_bam
 	tpsites_sum, total_psites_number = process_bam.psites_count(configIn.configList,transcript_dict,thread_num=1)
-	import detectORF
+	from . import detectORF
 	if args.longest_orf == "yes":
 		longest_orf = True
 	else:
