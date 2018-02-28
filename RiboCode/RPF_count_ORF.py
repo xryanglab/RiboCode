@@ -32,7 +32,8 @@ def readGTF(gtfFile):
 			stop_codon_sites[orf_id] = f.iv.end_d
 	return start_codon_sites,stop_codon_sites,ORF_features,counts
 
-def invert_strand( iv ):
+
+def invert_strand(iv):
 	iv2 = iv.copy()
 	if iv2.strand == "+":
 		iv2.strand = "-"
@@ -41,6 +42,7 @@ def invert_strand( iv ):
 	else:
 		raise ValueError("Illegal strand")
 	return iv2
+
 
 def count_reads(start_codon_sites,stop_codon_sites,ORF_features,counts,map_file,stranded,min_quality,count_mode,
                 first_exclude_codons,last_exclude_codons,min_read,max_read,exclude_min_ORF):
