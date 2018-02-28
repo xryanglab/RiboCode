@@ -324,11 +324,8 @@ Xudong Xing (xudonxing_bioinf[at]sina.com)
 
 .. _UNC Bioinformatics Utilities: https://github.com/mozack/ubu
 
-<<<<<<< HEAD
 .. _Bowtie: http://bowtie-bio.sourceforge.net/index.shtml
 
-=======
->>>>>>> origin/master
 .. |Build Status| image:: https://img.shields.io/travis/xzt41/RiboCode/master.svg?style=flat-square
    :target: https://travis-ci.org/xzt41/RiboCode
 
