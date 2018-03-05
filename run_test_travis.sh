@@ -47,3 +47,36 @@ ORFcount -h
 if [ $? != 0 ]; then
 	exit 1
 fi
+
+#5
+echo
+echo "test RiboCode"
+echo
+
+RiboCode -h
+
+if [ $? != 0 ]; then
+	exit 1
+fi
+
+#6
+echo
+echo "test RiboCode_onestep"
+echo
+
+RiboCode_onestep -h
+
+if [ $? != 0 ]; then
+	exit 1
+fi
+
+#7
+echo
+echo "test GTF_update"
+echo
+
+GTF_update -h
+
+if [ $? != 0 ]; then
+	exit 1
+fi

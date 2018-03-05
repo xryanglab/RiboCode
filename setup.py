@@ -37,7 +37,7 @@ setup(
 
     # https://packaging.python.org/en/latest/single_source_version.html
 
-    version= __version__,
+    version = __version__,
 
 
     #TODO fix name

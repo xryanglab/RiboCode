@@ -4,6 +4,11 @@ Changes
 todo in future versions:
 - Supporting for *de novo* GTF file (no annotated start and stop codons).
 
+v1.2.9 (2018.3.5)
+-----------------
+- Small bug fixed.
+- Added more test function.
+
 v1.2.8 (2017.12.30)
 -------------------
 - Supporting for Python3
