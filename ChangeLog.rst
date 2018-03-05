@@ -6,8 +6,9 @@ todo in future versions:
 
 v1.2.9 (2018.3.5)
 -----------------
-- Small bug fixed.
+- Small bug fixed in metaplots.
 - Added more test function.
+- Change the default backend of matplotlib.
 
 v1.2.8 (2017.12.30)
 -------------------

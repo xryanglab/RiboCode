@@ -1,6 +1,5 @@
 os:
-  - linx
-  - osx
+  - linux
 language: python
 python:
   - "2.7"
@@ -8,11 +7,9 @@ python:
   - "3.5"
   - "3.6"
 sudo: required
-addons:
-  apt:
-    packages:
-    - libhdf5-serial-dev
-    - hdf5-tools
+before_install:
+  - libhdf5-serial-dev
+  - hdf5-tools
 install:
   - pip install .
 script:

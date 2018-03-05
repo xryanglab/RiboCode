@@ -6,6 +6,8 @@ from __future__ import print_function
 __author__ = 'Zhengtao Xiao'
 
 import numpy as np
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.gridspec as gridspec
 import matplotlib.pyplot as plt
 import h5py

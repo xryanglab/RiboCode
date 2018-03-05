@@ -10,7 +10,8 @@ __author__ = 'Zhengtao Xiao'
 Basic pie chart
 ===============
 """
-
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
 def percentage_format(value,decimal=2):

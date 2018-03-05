@@ -7,6 +7,8 @@ from builtins import map,range
 __author__ = 'Zhengtao Xiao'
 
 from collections import Counter,defaultdict
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import numpy as np
 import pysam
