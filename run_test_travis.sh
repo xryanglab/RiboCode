@@ -72,10 +72,10 @@ fi
 
 #7
 echo
-echo "test GTF_update"
+echo "test GTFupdate"
 echo
 
-GTF_update -h
+GTFupdate -h
 
 if [ $? != 0 ]; then
 	exit 1
