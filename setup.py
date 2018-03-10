@@ -47,7 +47,7 @@ setup(
     long_description=long_description,
 
     # The project's main homepage.
-    url='https://github.com/xzt41/RiboCode',
+    url='https://github.com/xryanglab/RiboCode',
 
     # Author details
     author='Zhengtao Xiao',
@@ -90,8 +90,12 @@ setup(
         'Programming Language :: Python :: 3',
 
     ],
-
-
+    project_urls ={
+        'Documentation': 'https://github.com/xryanglab/RiboCode/blob/master/README.rst',
+        'Source': 'https://github.com/xryanglab/RiboCode',
+        'ChangeLog': 'https://github.com/xryanglab/RiboCode/blob/master/ChangeLog.rst',
+        'Issues': 'https://github.com/xryanglab/RiboCode/issues',
+    },
 
     # What does your project relate to?
     #TODO set proper keywords

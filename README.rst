@@ -2,7 +2,7 @@
 Detect translated ORFs using ribosome-profiling data
 ====================================================
 
-|Build Status| |PyPI| |Python Versions| |BioConda| |Publish| |downloads|
+|BuildStatus| |PyPI| |PythonVersions| |BioConda| |Publish| |downloads|
 
 *RiboCode* is a very simple but high-quality computational algorithm to
 identify genome-wide translated ORFs using ribosome-profiling data.
@@ -326,13 +326,10 @@ Xudong Xing (xudonxing_bioinf[at]sina.com)
 
 .. _Bowtie: http://bowtie-bio.sourceforge.net/index.shtml
 
-.. |Build Status| image:: https://img.shields.io/travis/xzt41/RiboCode/master.svg?style=flat-square
-   :target: https://travis-ci.org/xzt41/RiboCode
-
 .. |PyPI| image:: https://img.shields.io/pypi/v/RiboCode.svg?style=flat-square
    :target: https://pypi.python.org/pypi/RiboCode
 
-.. |Python Versions| image:: https://img.shields.io/pypi/pyversions/RiboCode.svg?style=flat-square
+.. |PythonVersions| image:: https://img.shields.io/pypi/pyversions/RiboCode.svg?style=flat-square
    :target: https://pypi.python.org/pypi/RiboCode
 
 .. |BioConda| image:: https://img.shields.io/badge/install-bioconda-green.svg?style=flat-square
@@ -343,3 +340,6 @@ Xudong Xing (xudonxing_bioinf[at]sina.com)
 
 .. |Publish| image:: https://img.shields.io/badge/publish-biorxiv-orange.svg?style=flat-square
    :target: https://www.biorxiv.org/content/early/2017/05/12/137216
+
+.. |BuildStatus| image:: https://circleci.com/gh/xzt41/RiboCode.svg?style=svg
+    :target: https://circleci.com/gh/xzt41/RiboCode
