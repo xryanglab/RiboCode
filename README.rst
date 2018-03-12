@@ -332,13 +332,13 @@ Xudong Xing (xudonxing_bioinf[at]sina.com)
 .. |PythonVersions| image:: https://img.shields.io/pypi/pyversions/RiboCode.svg?style=flat-square
    :target: https://pypi.python.org/pypi/RiboCode
 
-.. |BioConda| image:: https://img.shields.io/badge/install-bioconda-green.svg?style=flat-square
+.. |BioConda| image:: https://img.shields.io/badge/install-bioconda-blue.svg?style=flat-square
    :target: http://bioconda.github.io/recipes/ribocode/README.html
 
 .. |downloads| image:: https://anaconda.org/bioconda/ribocode/badges/downloads.svg
    :target: https://anaconda.org/bioconda/ribocode
 
-.. |Publish| image:: https://img.shields.io/badge/publish-NAR-orange.svg?style=flat-square
+.. |Publish| image:: https://img.shields.io/badge/publish-NAR-blue.svg?style=flat-square
    :target: https://doi.org/10.1093/nar/gky179
 
 .. |BuildStatus| image:: https://circleci.com/gh/xzt41/RiboCode.svg?style=svg
