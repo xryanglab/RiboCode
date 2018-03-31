@@ -184,47 +184,54 @@ def meta_analysis(gene_dict,transcript_dict,args):
 		                 "If no any start codons and stop codons are annotated in GTF file \n" +
 		                 ",please skip this step and create a config file to specify the P-site based on other evidence." )
 		sys.exit()
-	# read bam file
-	distance_to_start_count,distance_to_stop_count,length_counter = readTranscriptBam(
-		args.rpf_mapping_file,filter_tids,transcript_dict,args.stranded,args.minLength,args.maxLength)
-	# predefine the psite
-	pre_psite_dict = {}
-	total_reads = sum(length_counter.values())
+	# read bam files
 	fout = open(args.outname + "_pre_config.txt", "w")
-	fout.write("#read_length\tproportion(per total mapped reads)\tpredicted_psite\tf0_sum\tf1_sum\tf2_sum\tf0_percent\tpvalue1\tpvalue2\tpvalue_combined\n")
-	for l,d in distance_to_start_count.items():
-		if d.sum() < 10:
-			continue
-		mask_max_psite = d[:50].argmax()
-		predict_psite,others = _predict_psite(l,d,args.frame0_percent,args.pvalue1_cutoff,args.pvalue2_cutoff)
-		if predict_psite:
-			if mask_max_psite != predict_psite:
-				sys.stderr.write("Warning:The predicted P-site location(%i) for length %i is not the highest peak(%i),\
-				                 please confirm according metagene plots.\n" % (50-predict_psite,l,50-mask_max_psite))
-			read_percent = '{:.2%}'.format(length_counter[l] / total_reads)
-			pre_psite_dict[l] = predict_psite
-			f0sum,f1sum,f2sum,f0_percent,pv1,pv2,pv = others
-			fout.write("# " + "\t".join(map(str,[l,read_percent,50-predict_psite,f0sum,f1sum,f2sum,
-			                                     '{:.2%}'.format(f0_percent),pv1,pv2,pv])) + "\n")
+	for r in args.rpf_mapping_file:
+		fout.write("\n#%s\n" % r)
+		fout.write("#read_length\tproportion(per total mapped reads)\tpredicted_psite\tf0_sum\tf1_sum\tf2_sum\tf0_percent\tpvalue1\tpvalue2\tpvalue_combined\n")
+		distance_to_start_count,distance_to_stop_count,length_counter = readTranscriptBam(
+			r,filter_tids,transcript_dict,args.stranded,args.minLength,args.maxLength)
+		# predefine the psite
+		pre_psite_dict = {}
+		total_reads = sum(length_counter.values())
 
-	#print the psite lines
-	fout.write("\n")
-	if pre_psite_dict:
-		fout.write("# " + "\t".join(["SampleName","AlignmentFile","Stranded(yes/reverse)","P-siteReadLength","P-siteLocations"]) + "\n")
-		stranded = "yes" if args.stranded is True else "reverse"
-		pre_psite_len = list(map(str,sorted(pre_psite_dict.keys())))
-		pre_psite_loc = list(map(str,[-pre_psite_dict[i]+50 for i in sorted(pre_psite_dict.keys())]))
-		sampleName = os.path.splitext(os.path.basename(args.rpf_mapping_file))[0]
-		fout.write("\t".join(map(str,[sampleName,args.rpf_mapping_file,stranded,",".join(pre_psite_len),",".join(pre_psite_loc)])) + "\n")
-		fout.close()
-		distancePlot(distance_to_start_count,distance_to_stop_count,pre_psite_dict,length_counter,args.outname)
-		#lengthDistribution(length_counter,args.outname)
-	else:
-		distancePlot(distance_to_start_count,distance_to_stop_count,pre_psite_dict,length_counter,args.outname)
-		sys.stderr.write("No obviously periodicity were detected from alignment reads in annotated start codons,\n" +
-		                 "it could be due to poor quality sequencing.\n" +
-		                 "Please check the metagene plots and try again by lowering the value of frame0_percent")
+		for l,d in distance_to_start_count.items():
+			if d.sum() < 10:
+				continue
+			mask_max_psite = d[:50].argmax()
+			predict_psite,others = _predict_psite(l,d,args.frame0_percent,args.pvalue1_cutoff,args.pvalue2_cutoff)
+			if predict_psite:
+				if mask_max_psite != predict_psite:
+					sys.stderr.write("Warning:The predicted P-site location(%i) for length %i is not the highest peak(%i),\
+					                 please confirm according metagene plots.\n" % (50-predict_psite,l,50-mask_max_psite))
+				read_percent = '{:.2%}'.format(length_counter[l] / total_reads)
+				pre_psite_dict[l] = predict_psite
+				f0sum,f1sum,f2sum,f0_percent,pv1,pv2,pv = others
+				fout.write("# " + "\t".join(map(str,[l,read_percent,50-predict_psite,f0sum,f1sum,f2sum,
+				                                     '{:.2%}'.format(f0_percent),pv1,pv2,pv])) + "\n")
+		sampleName = os.path.splitext(os.path.basename(r))[0]
+		#print the psite lines
+		fout.write("\n")
+		if pre_psite_dict:
+			fout.write("# " + "\t".join(["SampleName","AlignmentFile","Stranded(yes/reverse)","P-siteReadLength","P-siteLocations"]) + "\n")
+			if args.stranded is True:
+				stranded = "yes"
+			elif args.stranded is False:
+				stranded = "reverse"
+			else:
+				stranded = "no"
+			pre_psite_len = list(map(str,sorted(pre_psite_dict.keys())))
+			pre_psite_loc = list(map(str,[-pre_psite_dict[i]+50 for i in sorted(pre_psite_dict.keys())]))
 
+			fout.write("\t".join(map(str,[sampleName,r,stranded,",".join(pre_psite_len),",".join(pre_psite_loc)])) + "\n")
+			distancePlot(distance_to_start_count,distance_to_stop_count,pre_psite_dict,length_counter,args.outname + sampleName)
+			#lengthDistribution(length_counter,args.outname)
+		else:
+			distancePlot(distance_to_start_count,distance_to_stop_count,pre_psite_dict,length_counter,args.outname + sampleName)
+			sys.stderr.write("No obviously periodicity are detected from bam file %s,\n" % r +
+			                 "it could be due to poor quality sequencing.\n" +
+			                 "Please check the metagene plots and try again by lowering the value of frame0_percent\n")
+	fout.close()
 
 def main():
 	verboseprint("Create metaplot file and predict the P-site locations ...")
@@ -233,7 +240,6 @@ def main():
 	gene_dict,transcript_dict = load_transcripts_pickle(os.path.join(args.annot_dir,"transcripts.pickle"))
 	meta_analysis(gene_dict,transcript_dict,args)
 	verboseprint("Complete prediction of the P-site locations")
-
 
 if __name__ == "__main__":
 	main()

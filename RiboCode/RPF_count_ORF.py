@@ -10,13 +10,13 @@ import HTSeq
 import pysam
 import sys
 
-def readGTF(gtfFile):
+def readGTF(gtfFile,stranded):
 	gtf = HTSeq.GFF_Reader(gtfFile)
 	start_codon_sites = {}
 	stop_codon_sites = {}
 	counts = {}
 
-	ORF_features = HTSeq.GenomicArrayOfSets("auto",stranded="yes")
+	ORF_features = HTSeq.GenomicArrayOfSets("auto",stranded !="no")
 	# for i,f in enumerate(gtf):
 	for f in gtf:
 		# i += 1
@@ -87,7 +87,7 @@ def count_reads(start_codon_sites,stop_codon_sites,ORF_features,counts,map_file,
 		if read_len > max_read:
 			too_long += 1
 			continue
-		if stranded == "yes":
+		if stranded != "reverse":
 			iv_seq = (co.ref_iv for co in r.cigar if co.type =="M" and co.size >0)
 		else:
 			iv_seq = (invert_strand(co.ref_iv) for co in r.cigar if co.type=="M" and co.size>0)
@@ -140,7 +140,7 @@ def main():
 	args = parsing_ORF_count()
 	verboseprint("Reading the GTF file ...")
 
-	start_codon_sites,stop_codon_sites,ORF_features,counts = readGTF(args.gtf_file)
+	start_codon_sites,stop_codon_sites,ORF_features,counts = readGTF(args.gtf_file,args.stranded)
 	counts["__too_low_quality"] = 0
 	counts["__not_aligned"] = 0
 	counts["__too_short(<%i)" % args.min_read] = 0

@@ -4,6 +4,12 @@ Changes
 todo in future versions:
 - Supporting for *de novo* GTF file (no annotated start and stop codons).
 
+v1.2.10 (2018.3.25)
+-----------------
+- Add "-i" option to metaplots command for multiple input files
+- Supporting for non-stranded library sequencing
+- Update the document
+
 v1.2.9 (2018.3.5)
 -----------------
 - Small bug fixed in metaplots.
@@ -34,7 +40,6 @@ v1.2.5 (2017.5.12)
 
 v1.2.4 (2017.5.4)
 -----------------
-- Add support for outputting ORF results in gtf format.
 - Add support for outputting ORF results in gtf format.
 - Fix a bug where some ORFs' genomic coordinates are wrong.
 - Other optimizations on code and documents.
