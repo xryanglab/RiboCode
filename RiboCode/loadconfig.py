@@ -44,13 +44,18 @@ class LoadConfig(object):
 	  				                  Use commas to separate read lengths and P-site offsets,\
 					                  e.g. 28,29 11,12\n")
 					sys.exit()
-				if stranded not in ["yes", "reverse"]:
+				if stranded not in ["yes", "reverse","no"]:
 					sys.stderr.write("Error, pleas check your config file\n, \
-					                  the stranded should be yes or reverse.\
+					                  the stranded should be yes ,no, or reverse.\
 					                  reverse means reversed strand interpretation\n")
 					sys.exit()
 				else:
-					stranded = True if stranded == "yes" else False
+					if stranded == "yes":
+						stranded = True
+					elif stranded == "reverse":
+						stranded = False
+					else:
+						stranded = None
 				if samplename in samplenames:
 					sys.stderr.wirte("Error, pls check you config file\n, bam file name is duplicated: %s.\n" % samplename)
 					sys.exit()
