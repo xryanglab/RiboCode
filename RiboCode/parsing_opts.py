@@ -248,7 +248,7 @@ def parsing_ribo_onestep():
 	parser.add_argument("-f","--fasta",dest="genomeFasta",required=True,type=str,
 	                    help="The genome sequences file in fasta format.")
 	group = parser.add_mutually_exclusive_group(required=True)
-	group.add_argument("-r","--rpf_mapping_file",dest="rpf_mapping_file",required=True,type=str,
+	group.add_argument("-r","--rpf_mapping_file",dest="rpf_mapping_file",required=False,type=str,
 	                    help="ribo-seq BAM/SAM file aligned to the transcriptome.")
 	group.add_argument("-i","--input_file",dest="rpf_mapping_file",required=False,type=read_file,
 	                    help="the file list the ribo-seq BAM/SAM files aligned to the transcriptome.")

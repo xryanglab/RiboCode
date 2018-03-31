@@ -189,7 +189,7 @@ Please make sure the path and file name are correct.
    of reads to the annotated start codons (or stop codons). The P-site config file, which defines the read lengths with
    strong 3-nt periodicity and the associated P-site locations for each length. Users can check the P-site periodicity
    or modify this file according the plots in PDF file. In some cases, user may have multiple bam files to predict ORFs
-   together in next step, they can use "-i" argument to specify a text file which contain the names of these bam files (
+   together in next step, they can use "-i" argument to specify a text file which contains the names of these bam files (
    one per line)
 
    .. _RiboCode:
