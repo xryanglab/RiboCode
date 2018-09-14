@@ -119,7 +119,7 @@ def distancePlot(distance_to_start_count,distance_to_stop_count,pre_psite_dict,l
 			y1 = distance_to_start_count[l]
 			y2 = distance_to_stop_count[l]
 			ax1.vlines(x,ymin=np.zeros(101),ymax=y1,colors=colors[:-1])
-			ax1.tick_params(axis='x',which="both",top="off",direction='out')
+			ax1.tick_params(axis='x',which="both",top=False,direction='out')
 			ax1.set_xticks(xticks)
 			ax1.set_xlim((-50,50))
 			ax1.set_xlabel("Distance (nt)")
@@ -128,7 +128,7 @@ def distancePlot(distance_to_start_count,distance_to_stop_count,pre_psite_dict,l
 			ax1.set_title("({} nt reads,proportion:{})".format(l,perct) + "\n Distance 5'- start codons")
 
 			ax2.vlines(x,ymin=np.zeros(101),ymax=y2,colors=colors[:-1])
-			ax2.tick_params(axis='x',which="both",top="off",direction='out')
+			ax2.tick_params(axis='x',which="both",top=False,direction='out')
 			ax2.set_xticks(xticks)
 			ax2.set_xlim((-50,50))
 			ax2.set_xlabel("Distance (nt)")

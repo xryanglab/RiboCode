@@ -32,7 +32,7 @@ def generate_colors(length,shiftn=0):
 def plot_ORF(ax,tpsites,orf_start):
 	colors = generate_colors(tpsites.size,orf_start%3)
 	ax.vlines(np.arange(tpsites.size),ymin=0,ymax=tpsites,colors=colors)
-	ax.tick_params(axis='x',which="both",top="off",direction='out',labelsize=15)
+	ax.tick_params(axis='x',which="both",top=False,direction='out',labelsize=15)
 	ax.tick_params(axis='y',which="both",labelsize=15)
 	ax.set_ylabel("P-site reads density",fontsize=18)
 	ax.set_xlim((0,tpsites.size))
