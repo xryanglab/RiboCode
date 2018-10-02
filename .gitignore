@@ -4,4 +4,5 @@ dist/
 RiboCode.egg-info
 RiboCode/*.pyc
 .idea/
-
+._.DS_Store
+.DS_Store
