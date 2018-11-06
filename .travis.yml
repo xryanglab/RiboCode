@@ -9,7 +9,7 @@ python:
 sudo: required
 before_install:
   - sudo apt-get update
-  - sudo apt-get install -y hdf5-tools libhdf5-serial-dev libbz2-dev liblzma-dev libcurl4-openssl-dev python3-pip python-pip
+  - sudo apt-get install -y hdf5-tools libhdf5-serial-dev libbz2-dev liblzma-dev libcurl4-openssl-dev python3-dev python-dev python3-pip python-pip
   - sudo pip3 install --upgrade pip  
   - sudo pip2 install --upgrade pip
 install:
