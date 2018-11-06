@@ -6,7 +6,7 @@ jobs:
     steps:
       - run: |
           sudo apt-get update
-          sudo apt-get install -y hdf5-tools libhdf5-serial-dev libbz2-dev python3-pip
+          sudo apt-get install -y hdf5-tools libhdf5-serial-dev libbz2-dev liblzma-dev python3-pip
       - checkout
       - run: |
           pip3 install .
