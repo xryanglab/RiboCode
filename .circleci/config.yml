@@ -9,5 +9,5 @@ jobs:
           sudo apt-get install -y hdf5-tools libhdf5-serial-dev python3-pip
       - checkout
       - run: |
-          pip install .
+          pip3 install .
           bash run_test_travis.sh
