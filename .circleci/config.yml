@@ -1,8 +1,8 @@
 version: 2
 jobs:
   build:
-    machine:
-      image: circleci/classic:latest 
+    docker:
+      - image: ubuntu:14.04 
     steps:
       - run: |
           sudo apt-get install hdf5-tools libhdf5-serial-dev
