@@ -8,8 +8,10 @@ python:
   - "3.6"
 sudo: required
 before_install:
-  - sudo apt-get install -qq hdf5-tools libhdf5-serial-dev
+  - sudo apt-get update
+  - sudo apt-get install -y hdf5-tools libhdf5-serial-dev libbz2-dev liblzma-dev libcurl4-openssl-dev python3-pip
+  - sudo pip3 install --upgrade pip  
 install:
-  - pip install .
+  - pip3 install . --ignore-installed six
 script:
   - ./run_test_travis.sh
