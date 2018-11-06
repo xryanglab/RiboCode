@@ -10,5 +10,5 @@ jobs:
           sudo pip3 install --upgrade pip
       - checkout
       - run: |
-          pip3 install .
+          pip3 install . --ignore-installed six --user
           bash run_test_travis.sh
