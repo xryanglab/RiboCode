@@ -13,4 +13,4 @@ jobs:
       - run: |
           pip3 install . --ignore-installed six
           pip2 install . --ignore-installed six
-          bash run_test_travis.sh
+          bash .circleci/run_test.sh
