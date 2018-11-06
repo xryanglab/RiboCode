@@ -5,7 +5,7 @@ jobs:
       - image circleci/classic:latest 
     steps:
       - run: |
-        sudo apt-get install -qq hdf5-tools libhdf5-serial-dev
+          sudo apt-get install hdf5-tools libhdf5-serial-dev
       - checkout
       - run:
         name: test
