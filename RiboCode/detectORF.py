@@ -372,6 +372,9 @@ def main(gene_dict, transcript_dict, annot_dir, tpsites_sum, total_psites_number
 				orf_results.append(orf_dict)
 				transcript_orf_hash[tid].append(counts)
 				counts += 1
+	
+	if len(orf_results) == 0:
+		sys.stderr.write("Opps, no translated ORFs were detected.\n")
 
 	#combine ORFs from transcripts
 	#For each stop codon of a gene, the most upstream start is left
