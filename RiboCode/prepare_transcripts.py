@@ -16,6 +16,7 @@ else:
 import os
 from pyfasta import Fasta
 from time import strftime
+import re
 
 class ParsingError(Exception):
 	pass
@@ -69,10 +70,12 @@ def Interval_from_directional(start_d,end_d,strand="-"):
 
 def parsing_attr(attr_string):
 	attr_dict = {}
-	for i in attr_string.split(";"):
+	attr_split = re.findall(r'.*? ".*?";', attr_string)
+	for i in attr_split:
 		if i:
 			k,v = i.strip().split(" ",1)
-			k = intern(k.strip())
+			k = intern(k)
+			if v.endswith(";"): v = v[:-1]
 			v = intern(v.strip('"'))
 			if k == "tag":
 				attr_dict.setdefault(k,[]).append(v)
@@ -93,10 +96,7 @@ def parsing_line(line):
         # 8) frame : 0, 1, 2 or "." (not used)
         # 9) attribute : key-value pairs separated by semicolons
 	"""
-	fields = line.strip().split("\t")
-	chrom,source,feature,start,end,score,strand,frame,attr = fields
-	if len(fields) != 9:
-		raise ParsingError("Wrong number of fields %d (expected 9)" % len(fields))
+	chrom,source,feature,start,end,score,strand,frame,attr = line.strip().split("\t",8)
 	#convert to 0-based.
 	iv = Interval(int(start) - 1, int(end), strand)
 	field_dict = {"chrom": intern(chrom),"source":source,"feature": intern(feature),"iv":iv,"attr":parsing_attr(attr)}
