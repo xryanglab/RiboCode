@@ -4,6 +4,10 @@ Changes
 todo in future versions:
 - Supporting for *de novo* GTF file (no annotated start and stop codons).
 
+v1.2.11 (2018.12.20)
+-----------------
+- Several small updates.
+
 v1.2.10 (2018.3.25)
 -----------------
 - Add "-i" option to metaplots command for multiple input files
