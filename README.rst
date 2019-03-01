@@ -354,5 +354,6 @@ Xudong Xing (xudonxing_bioinf[at]sina.com)
     :target: https://circleci.com/gh/xzt41/RiboCode
 
 .. |Important| image:: https://img.shields.io/badge/-Note-orange.svg
-    :width: 65
+    :width: 50
+    :target: https://github.com/xryanglab/RiboCode/blob/master/data/GTF_update.rst
 
