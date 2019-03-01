@@ -353,4 +353,5 @@ Xudong Xing (xudonxing_bioinf[at]sina.com)
 .. |BuildStatus| image:: https://circleci.com/gh/xzt41/RiboCode.svg?style=svg
     :target: https://circleci.com/gh/xzt41/RiboCode
 
-.. |Important| image:: https://img.shields.io/badge/-Notice-orange.svg
+.. |Important| image:: https://img.shields.io/badge/-Note-orange.svg
+
