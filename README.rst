@@ -108,7 +108,7 @@ Please make sure the path and file name are correct.
 
    FASTA: ftp://ftp.sanger.ac.uk/pub/gencode/Gencode_human/release_19/GRCh37.p13.genome.fa.gz
 
-   ****Notice**: The GTF file required by *RiboCode* should include three-level hierarchy
+   **Notice: The GTF file required by *RiboCode* should include three-level hierarchy
    annotations: genes,transcripts and exons. Some GTF files may lack the gene and transcript
    annotations, users can added these annotations by using the "GTFupdate" command in *RiboCode*.
    Please refer to `GTF_update.rst`_ for more information.**
