@@ -88,7 +88,7 @@ Tutorial to analyze ribosome-profiling data and run *RiboCode*
 Here, we use the `HEK293 dataset`_ as an example to illustrate the use of *RiboCode* and demonstrate typical workflows.
 Please make sure the path and file name are correct.
 
-1. **Required files**
+1. **Required files** 
 
    The genome FASTA file, GTF file for annotation can be downloaded from:
 
