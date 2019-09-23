@@ -314,12 +314,7 @@ Recipes (FAQ):
 
 For any questions, please contact:
 ----------------------------------
-
-Zhengtao Xiao (xzt13[at]tsinghua.org.cn)
-
-Rongyao Huang (THUhry12[at]163.com)
-
-Xudong Xing (xudonxing_bioinf[at]sina.com)
+Xuerui Yang (yangxuerui@tsinghua.edu.cn)
 
 .. _SRA_Toolkit: https://trace.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?view=software
 
