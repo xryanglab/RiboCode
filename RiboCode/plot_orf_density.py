@@ -5,6 +5,8 @@ from __future__ import print_function
 # -*- coding:UTF-8 -*-
 __author__ = 'Zhengtao Xiao'
 
+
+## 20211026: modified by Li Fajin, adding "--ORF-type" and "--start-codon" parameters
 import numpy as np
 import matplotlib
 matplotlib.use('Agg')
@@ -29,19 +31,48 @@ def generate_colors(length,shiftn=0):
 		colors = np.tile(colors2,rep_times)
 	return colors[:length]
 
-def plot_ORF(ax,tpsites,orf_start):
+def plot_ORF(ax,tpsites,orf_start,orf_stop,transcript_id,StartCodon):
 	colors = generate_colors(tpsites.size,orf_start%3)
-	ax.vlines(np.arange(tpsites.size),ymin=0,ymax=tpsites,colors=colors)
+	ax.vlines(np.arange(tpsites.size),ymin=0,ymax=tpsites,colors=colors,linewidth=0.3)
 	ax.tick_params(axis='x',which="both",top=False,direction='out',labelsize=15)
 	ax.tick_params(axis='y',which="both",labelsize=15)
 	ax.set_ylabel("P-site reads density",fontsize=18)
 	ax.set_xlim((0,tpsites.size))
+	ax.set_title(transcript_id+":"+str(orf_start)+"-"+str(orf_stop)+":"+StartCodon)
+
+def plot_predicted(tpsites,orf_start,orf_stop,transcript_id,StartCodon,outname):
+	fig=plt.figure(figsize=(8,4))
+	## ax1
+	ax1=fig.add_subplot(111)
+	tpsites_orf=tpsites[int(orf_start)-1:orf_stop]
+	colors = generate_colors(tpsites.size,orf_start%3)
+	ax1.vlines(np.arange(tpsites_orf.size),ymin=0,ymax=tpsites_orf,colors=colors[int(orf_start)-1:orf_stop],linewidth=0.3)
+	ax1.tick_params(axis='x',which="both",top=False,direction='out',labelsize=15)
+	ax1.tick_params(axis='y',which="both",labelsize=15)
+	ax1.set_ylabel("P-site reads density",fontsize=18)
+	ax1.set_xlim((0,tpsites_orf.size))
+	ax1.set_title(transcript_id+":"+str(orf_start)+"-"+str(orf_stop)+":"+StartCodon)
+	plt.savefig(outname + ".pdf")
+
+def plot_annotated(cds_start,cds_end,psites_array,transcript_id,outname):
+	fig=plt.figure(figsize=(8,4))
+	## ax1
+	ax1=fig.add_subplot(111)
+	tpsites_orf=psites_array[int(cds_start)-1:cds_end]
+	colors = generate_colors(psites_array.size,cds_start%3)
+	ax1.vlines(np.arange(tpsites_orf.size),ymin=0,ymax=tpsites_orf,colors=colors[int(cds_start)-1:cds_end],linewidth=0.3)
+	ax1.tick_params(axis='x',which="both",top=False,direction='out',labelsize=15)
+	ax1.tick_params(axis='y',which="both",labelsize=15)
+	ax1.set_ylabel("P-site reads density",fontsize=18)
+	ax1.set_xlim((0,tpsites_orf.size))
+	ax1.set_title(transcript_id+":"+str(cds_start)+"-"+str(cds_end))
+	plt.savefig(outname + ".pdf")
 
 def plot_annotation(ax,tlength,start,stop,label,color):
 	width = 0.15
 	ax.set_xlim((0,tlength))
 	ax.fill((start-1,stop,stop,start-1),
-	        (1+width/2,1+width/2,1-width/2,1-width/2),
+			(1+width/2,1+width/2,1-width/2,1-width/2),
 			color=color,lw=0.5,zorder=20)
 	ax.axhline(1,color="gray",lw=0.5)
 	ax.set_frame_on(False)
@@ -59,7 +90,7 @@ def read_psites_array(filename,transcript_id):
 		v = fin["p_sites"][idx]
 	return v
 
-def plot_main(cds_start,cds_end,psites_array,orf_tstart,orf_tstop,outname):
+def plot_main(cds_start,cds_end,psites_array,orf_tstart,orf_tstop,transcript_id,StartCodon,outname):
 	"""
 	the main plot function
 	"""
@@ -71,7 +102,7 @@ def plot_main(cds_start,cds_end,psites_array,orf_tstart,orf_tstop,outname):
 
 	ax1 = plt.subplot(gs[0])
 	ax2 = plt.subplot(gs[1])
-	plot_ORF(ax1,psites_array,orf_tstart)
+	plot_ORF(ax1,psites_array,orf_tstart,orf_tstop,transcript_id,StartCodon)
 	plot_annotation(ax2,psites_array.size,orf_tstart,orf_tstop,"Predicted","#3994FF")
 
 	if cds_start is not None:
@@ -102,5 +133,12 @@ def main():
 		else:
 			psites_array += read_psites_array(s + "_psites.hd5",args.transcript_id)
 	if not args.outname:
-		args.outname = "%s_%i_%i" % (args.transcript_id,args.orf_tstart,args.orf_tstop)
-	plot_main(cds_start,cds_end,psites_array,args.orf_tstart,args.orf_tstop,args.outname)
+		args.outname = "%s_%i_%i_%s" % (args.transcript_id,args.orf_tstart,args.orf_tstop,args.ORFtype)
+	if args.ORFtype.upper()=="ALL":
+		plot_main(cds_start,cds_end,psites_array,args.orf_tstart,args.orf_tstop,args.transcript_id,args.StartCodon,args.outname)
+	elif args.ORFtype.upper() == 'PREDICTED':
+		plot_predicted(psites_array,args.orf_tstart,args.orf_tstop,args.transcript_id,args.StartCodon,args.outname)
+	elif args.ORFtype.upper() == "ANNOTATED":
+		plot_annotated(cds_start,cds_end,psites_array,args.transcript_id,args.outname)
+	else:
+		raise IOError("Please reset your --ORF-type parameter: predicted, annotated, or all. default=all")
