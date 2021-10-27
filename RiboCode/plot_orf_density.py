@@ -85,7 +85,7 @@ def plot_annotation(ax,tlength,start,stop,label,color):
 
 def read_psites_array(filename,transcript_id):
 	with h5py.File(filename,"r") as fin:
-		k = fin["transcript_ids"][:]
+		k = np.array([i.decode("utf-8") for i in fin["transcript_ids"][:]])
 		idx = np.where(k == transcript_id)[0][0]
 		v = fin["p_sites"][idx]
 	return v
