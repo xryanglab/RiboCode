@@ -54,19 +54,6 @@ def plot_predicted(tpsites,orf_start,orf_stop,transcript_id,StartCodon,outname):
 	ax1.set_title(transcript_id+":"+str(orf_start)+"-"+str(orf_stop)+":"+StartCodon)
 	plt.savefig(outname + ".pdf")
 
-def plot_annotated(cds_start,cds_end,psites_array,transcript_id,outname):
-	fig=plt.figure(figsize=(8,4))
-	## ax1
-	ax1=fig.add_subplot(111)
-	tpsites_orf=psites_array[int(cds_start)-1:cds_end]
-	colors = generate_colors(psites_array.size,cds_start%3)
-	ax1.vlines(np.arange(tpsites_orf.size),ymin=0,ymax=tpsites_orf,colors=colors[int(cds_start)-1:cds_end],linewidth=0.3)
-	ax1.tick_params(axis='x',which="both",top=False,direction='out',labelsize=15)
-	ax1.tick_params(axis='y',which="both",labelsize=15)
-	ax1.set_ylabel("P-site reads density",fontsize=18)
-	ax1.set_xlim((0,tpsites_orf.size))
-	ax1.set_title(transcript_id+":"+str(cds_start)+"-"+str(cds_end))
-	plt.savefig(outname + ".pdf")
 
 def plot_annotation(ax,tlength,start,stop,label,color):
 	width = 0.15
@@ -133,12 +120,10 @@ def main():
 		else:
 			psites_array += read_psites_array(s + "_psites.hd5",args.transcript_id)
 	if not args.outname:
-		args.outname = "%s_%i_%i_%s" % (args.transcript_id,args.orf_tstart,args.orf_tstop,args.ORFtype)
-	if args.ORFtype.upper()=="ALL":
+		args.outname = "%s_%i_%i" % (args.transcript_id,args.orf_tstart,args.orf_tstop)
+	if args.PlotAnnotatedORF.upper()=="YES":
 		plot_main(cds_start,cds_end,psites_array,args.orf_tstart,args.orf_tstop,args.transcript_id,args.StartCodon,args.outname)
-	elif args.ORFtype.upper() == 'PREDICTED':
+	elif args.ORFtype.upper() == 'NO':
 		plot_predicted(psites_array,args.orf_tstart,args.orf_tstop,args.transcript_id,args.StartCodon,args.outname)
-	elif args.ORFtype.upper() == "ANNOTATED":
-		plot_annotated(cds_start,cds_end,psites_array,args.transcript_id,args.outname)
 	else:
-		raise IOError("Please reset your --ORF-type parameter: predicted, annotated, or all. default=all")
+		raise IOError("Please reset your --plot-annotated-orf parameter: yes or no. default=yes")

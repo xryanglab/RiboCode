@@ -181,8 +181,8 @@ def parsing_plot_orf_density():
 	                    help="output file name,default is transcriptid_tstart_tstop.pdf")
 	parser.add_argument("--start-codon",dest="StartCodon",required=True,type=str,
 						help="start codon of predicted ORFs")
-	parser.add_argument("--ORF-type",dest="ORFtype",required=True,type=str,default="all",
-						help="ORF type to be plotted. Predicted, annotated or both.")
+	parser.add_argument("--plot-annotated-orf",dest="PlotAnnotatedORF",required=True,type=str,default="yes",
+						help="plot the annotated orf or not.")
 	parser.add_argument('-V',"--version",action="version",version=__version__)
 	args = parser.parse_args()
 
