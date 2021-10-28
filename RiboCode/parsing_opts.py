@@ -179,6 +179,10 @@ def parsing_plot_orf_density():
 	                    help="transcript-level coordinates of end of ORF (orf_tstop)")
 	parser.add_argument("-o","--outname",dest="outname",required=False,type=str,default="",
 	                    help="output file name,default is transcriptid_tstart_tstop.pdf")
+	parser.add_argument("--start-codon",dest="StartCodon",required=True,type=str,
+						help="start codon of predicted ORFs")
+	parser.add_argument("--plot-annotated-orf",dest="PlotAnnotatedORF",required=True,type=str,default="yes",
+						help="plot the annotated orf or not.")
 	parser.add_argument('-V',"--version",action="version",version=__version__)
 	args = parser.parse_args()
 
