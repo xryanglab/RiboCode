@@ -343,8 +343,8 @@ Xuerui Yang (yangxuerui@tsinghua.edu.cn)
 .. |Publish| image:: https://img.shields.io/badge/publish-NAR-blue.svg?style=flat-square
    :target: https://doi.org/10.1093/nar/gky179
 
-.. |BuildStatus| image:: https://circleci.com/gh/xzt41/RiboCode.svg?style=svg
-    :target: https://circleci.com/gh/xzt41/RiboCode
+.. |BuildStatus| image:: https://circleci.com/gh/xryanglab/RiboCode.svg?style=svg
+    :target: https://circleci.com/gh/xryanglab/RiboCode
 
 .. |Important| image:: https://img.shields.io/badge/-Note-orange.svg
     :width: 50
