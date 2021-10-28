@@ -123,7 +123,7 @@ def main():
 		args.outname = "%s_%i_%i" % (args.transcript_id,args.orf_tstart,args.orf_tstop)
 	if args.PlotAnnotatedORF.upper()=="YES":
 		plot_main(cds_start,cds_end,psites_array,args.orf_tstart,args.orf_tstop,args.transcript_id,args.StartCodon,args.outname)
-	elif args.ORFtype.upper() == 'NO':
+	elif args.PlotAnnotatedORF.upper() == 'NO':
 		plot_predicted(psites_array,args.orf_tstart,args.orf_tstop,args.transcript_id,args.StartCodon,args.outname)
 	else:
 		raise IOError("Please reset your --plot-annotated-orf parameter: yes or no. default=yes")
