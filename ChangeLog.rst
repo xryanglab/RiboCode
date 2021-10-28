@@ -4,6 +4,10 @@ Changes
 todo in future versions:
 - Supporting for *de novo* GTF file (no annotated start and stop codons).
 
+v1.2.12 (2021.10.28)
+-----------------
+- Fixed a small bug caused by an update of h5py; Added a new parameter "--plot-annotated-orf".
+
 v1.2.11 (2018.12.20)
 -----------------
 - Several small updates.
