@@ -2,15 +2,13 @@ version: 2
 jobs:
   build:
     docker:
-      - image: ubuntu:14.04 
+      - image: ubuntu:latest 
     steps:
       - run: |
-          sudo apt-get update
-          sudo apt-get install -y hdf5-tools libhdf5-serial-dev libbz2-dev liblzma-dev libcurl4-openssl-dev python3-dev python-dev python3-pip python-pip
-          sudo pip3 install --upgrade pip
-          sudo pip2 install --upgrade pip
+          apt update
+          apt install -y hdf5-tools libhdf5-serial-dev libbz2-dev liblzma-dev libcurl4-openssl-dev python3-dev python2-dev python3-pip
+          pip install --upgrade pip
       - checkout
       - run: |
-          pip3 install . --ignore-installed six
-          pip2 install . --ignore-installed six
+          pip install . --ignore-installed six
           bash .circleci/run_test.sh

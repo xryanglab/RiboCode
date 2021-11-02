@@ -87,7 +87,7 @@ Tutorial to analyze ribosome-profiling data and run *RiboCode*
 Here, we use the `HEK293 dataset`_ as an example to illustrate the use of *RiboCode* and demonstrate typical workflow.
 Please make sure the path and file name are correct.
 
-1. **Required files**
+1. **Required files** 
 
    The genome FASTA file, GTF file for annotation can be downloaded from:
 
@@ -312,12 +312,7 @@ Recipes (FAQ):
 
 For any questions, please contact:
 ----------------------------------
-
-Zhengtao Xiao (xzt13[at]tsinghua.org.cn)
-
-Rongyao Huang (THUhry12[at]163.com)
-
-Xudong Xing (xudonxing_bioinf[at]sina.com)
+Xuerui Yang (yangxuerui@tsinghua.edu.cn)
 
 .. _SRA_Toolkit: https://trace.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?view=software
 
@@ -348,8 +343,8 @@ Xudong Xing (xudonxing_bioinf[at]sina.com)
 .. |Publish| image:: https://img.shields.io/badge/publish-NAR-blue.svg?style=flat-square
    :target: https://doi.org/10.1093/nar/gky179
 
-.. |BuildStatus| image:: https://circleci.com/gh/xzt41/RiboCode.svg?style=svg
-    :target: https://circleci.com/gh/xzt41/RiboCode
+.. |BuildStatus| image:: https://circleci.com/gh/xryanglab/RiboCode.svg?style=svg
+    :target: https://circleci.com/gh/xryanglab/RiboCode
 
 .. |Important| image:: https://img.shields.io/badge/-Note-orange.svg
     :width: 50
