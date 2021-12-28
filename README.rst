@@ -179,7 +179,7 @@ Please make sure the path and file name are correct.
 
       prepare_transcripts -g <gencode.v19.annotation.gtf> -f <hg19_genome.fa> -o <RiboCode_annot>
 
-   Note: The RiboCode_annot folder is necessary for the following steps, so its location should be properly given if author moved it or changed the working directory.
+   |Important| The RiboCode_annot folder is necessary for the following steps, so its location should be properly given if author moved it or changed the working directory.
 
    (2). Selecting the length range of the RPF reads and identify the P-site locations:
 
@@ -318,7 +318,7 @@ Recipes (FAQ):
 
 For any questions, please contact:
 ----------------------------------
-Xuerui Yang (yangxuerui@tsinghua.edu.cn)
+Xuerui Yang (yangxuerui[at]tsinghua.edu.cn); Zhengtao Xiao (zhengtao.xiao[at]xjtu.edu.cn)
 
 .. _SRA_Toolkit: https://trace.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?view=software
 
