@@ -15,24 +15,20 @@ import sys
 
 def write_psites(tpsites,psites_number,filename):
 	with h5py.File(filename,"w") as fout:
-		dt = h5py.special_dtype(vlen=np.dtype("int32"))
+		dt = h5py.vlen_dtype(np.dtype("int32"))
 		# http://docs.h5py.org/en/latest/strings.html
-		if sys.version_info.major ==2:
-			ds = h5py.special_dtype(vlen=unicode)
-			fout.create_dataset("transcript_ids",data=list(tpsites.keys()),dtype=ds)
-		else:
-			ds = h5py.special_dtype(vlen=str)
-			fout.create_dataset("transcript_ids",data=list(map(lambda x:bytes(x,"utf8"),tpsites.keys())),dtype=ds)
-		fout.create_dataset("p_sites",data=list(tpsites.values()),dtype=dt, compression="gzip")
-		fout.create_dataset("psites_number",data=psites_number,dtype="int32")
+		ds = h5py.vlen_dtype(str)
+		fout.create_dataset("transcript_ids",data=list(tpsites.keys()),dtype=ds)
+		fout.create_dataset("p_sites",data=list(tpsites.values()),dtype=dt,compression="gzip")
+		fout.attrs.create("psites_number",data=psites_number,dtype="int32")
 	return None
 
 def load_psites(filename):
 	with h5py.File(filename,"r") as fin:
-		k = fin["transcript_ids"][:]
-		v = fin["p_sites"][:]
+		k = fin["transcript_ids"].asstr()[()]
+		v = fin["p_sites"][()]
 		tpsites = dict(zip(k,v))
-		psites_number = fin["psites_number"].value
+		psites_number = fin.attrs["psites_number"]
 	return tpsites,psites_number
 
 def read_bam(configData):
@@ -133,4 +129,4 @@ def psites_count(configList,transcript_dict,thread_num=1):
 if __name__ == "__main__":
 	from .loadconfig import LoadConfig
 	config = LoadConfig("config.txt")
-	psites_count(config.configList,transcript_dict,1)
+	#psites_count(config.configList,transcript_dict,1)

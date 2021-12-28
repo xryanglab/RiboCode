@@ -8,6 +8,8 @@ from collections import namedtuple
 import numpy as np
 from scipy import stats
 from scipy.stats import find_repeats,distributions,ttest_1samp
+from statsmodels.stats import multitest
+
 
 WilcoxonResult = namedtuple('WilcoxonResult', ('statistic', 'pvalue'))
 def wilcoxon_greater(x, y, zero_method ="wilcox", correction = False):
@@ -81,16 +83,91 @@ def wilcoxon_greater(x, y, zero_method ="wilcox", correction = False):
 
 	return WilcoxonResult(T, prob)
 
-def combine_pvals(pvalues, method="stouffer"):
+# def combine_pvals(pvalues, method="stouffer"):
+# 	"""
+# 	:param pvs
+# 	:return: combined pvalue
+# 	"""
+
+# 	pvs = pvalues[~np.isnan(pvalues)]
+# 	if pvs.size != 2:
+# 		comb_pv = np.nan
+# 	else:
+# 		comb_pv = stats.combine_pvalues(pvalues,method=method)[1]
+
+# 	return comb_pv
+
+
+def cor_mat(x,y):
 	"""
-	:param pvs
-	:return: combined pvalue
+	create a k x k symmetric matrix that reflects the correlation structure among the tests.
+	"""
+	if x.sum() == 0 or y.sum() == 0:
+		R = np.diag([1,1])
+	else:
+		R = np.corrcoef(x,y)
+	return R
+
+def meff(R, method ="galwey"):
+
+	if method not in ["nyholt","liji","gao","galwey"]:
+		raise ValueError("method must be nyholt, liji, gao, galwey")
+	
+	#get eigenvalues of 'R' matrix
+	evs = np.linalg.eigvalsh(R)
+
+	if method == "nyholt":
+		k = evs.size
+		m = 1 + (k-1) * (1 - np.var(evs,ddof=1) / k)
+	elif method == "liji":
+		evs_abs = np.abs(evs)
+		tmp = evs_abs >= 1
+		m = np.sum(tmp.astype(int) + (evs_abs - np.floor(evs_abs)))
+
+	elif method == "gao":
+		C = 0.995
+		evs_rev_sort = -np.sort(-evs)
+		m = np.where(np.cumsum(evs_rev_sort) / np.sum(evs) > C)[0][0]
+	elif method == "galwey":
+		if np.any(evs<0):
+			evs[evs <0 ] = 0
+		
+		m = np.power(np.sum(np.sqrt(evs)), 2) / np.sum(evs)
+		m = np.floor(m)
+
+	return m
+
+def combine_pvals(pvalues, method="stouffer", adjust="none", R="none"):
+	"""
+	see more details at: https://search.r-project.org/CRAN/refmans/poolr/html/stouffer.html
 	"""
 
+	if adjust not in ["nyholt","liji","gao","galwey","none"]:
+		raise ValueError("method must be nyholt, liji, gao, galwey, or none")
+
+	if adjust != "none" and isinstance(R,str) and R == "none":
+		raise ValueError("R must be specified if adjust is set to something other than 'none'")
+
+	
 	pvs = pvalues[~np.isnan(pvalues)]
 	if pvs.size != 2:
-		comb_pv = np.nan
+		return np.nan
+	
+	k = pvs.size
+	
+	if method == "stouffer":
+		statistic = np.sum(stats.norm.isf(pvs)) / np.sqrt(pvs.size)			
+		if adjust in ["nyholt", "liji", "gao", "galwey"]:
+			m = meff(R,method=adjust)
+			statistic = statistic * np.sqrt( m / k)
+		elif adjust == "generalized":
+			statistic = statistic * np.sqrt(k) / np.sqrt(np.sum(R))
+		comb_pv = stats.norm.sf(statistic)
 	else:
-		comb_pv = stats.combine_pvalues(pvalues,method=method)[1]
-
+		raise ValueError("Currently, only stouffer is supported!")
 	return comb_pv
+
+def pvals_adjust(comb_pvs,method="bonferroni"):
+	return multitest.multipletests(comb_pvs,method=method)[1]
+
+	

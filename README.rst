@@ -22,6 +22,8 @@ Dependencies:
 
 - Scipy
 
+- statsmodels
+
 - matplotlib
 
 - HTSeq
@@ -177,6 +179,8 @@ Please make sure the path and file name are correct.
 
       prepare_transcripts -g <gencode.v19.annotation.gtf> -f <hg19_genome.fa> -o <RiboCode_annot>
 
+   Note: The RiboCode_annot folder is necessary for the following steps, so its location should be properly given if author moved it or changed the working directory.
+
    (2). Selecting the length range of the RPF reads and identify the P-site locations:
 
    .. code-block:: bash
@@ -229,11 +233,13 @@ Please make sure the path and file name are correct.
 
      "novel" (from non-coding genes or non-coding transcripts of the coding genes).
 
+    - alt_ORF_type: only shown in "_collapsed.txt" file for reporting alternative annotations of each ORF based on its relative location in those transcripts other than the longest one       
     - ORF_tstart, ORF_tstop: the start and end position of ORF relative to its transcript (1-based coordinate)
     - ORF_gstart, ORF_gstop: the start and end position of ORF in the genome (1-based coordinate)
     - pval_frame0_vs_frame1: significance levels of P-site densities of frame0 greater than of frame1
     - pval_frame0_vs_frame2: significance levels of P-site densities of frame0 greater than of frame2
     - pval_combined: integrated P-value by combining pval_frame0_vs_frame1 and pval_frame0_vs_frame2
+    - adjusted_pval: adjusted p-value for multiple testing correction.
 
    **All above three steps can also be easily run by a single command "RiboCode_onestep":**
 
@@ -329,10 +335,10 @@ Xuerui Yang (yangxuerui@tsinghua.edu.cn)
 .. _Bowtie: http://bowtie-bio.sourceforge.net/index.shtml
 
 .. |PyPI| image:: https://img.shields.io/pypi/v/RiboCode.svg?style=flat-square
-   :target: https://pypi.python.org/pypi/RiboCode
+   :target: https://pypi.python.org/pypi/RiboCode
 
 .. |PythonVersions| image:: https://img.shields.io/pypi/pyversions/RiboCode.svg?style=flat-square
-   :target: https://pypi.python.org/pypi/RiboCode
+   :target: https://pypi.python.org/pypi/RiboCode
 
 .. |BioConda| image:: https://img.shields.io/badge/install-bioconda-blue.svg?style=flat-square
    :target: http://bioconda.github.io/recipes/ribocode/README.html
