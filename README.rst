@@ -2,11 +2,7 @@
 Detect translated ORFs using ribosome-profiling data
 ====================================================
 
-<<<<<<< HEAD
 |BuildStatus| |PyPI| |PythonVersions| |BioConda| |Publish1| |Publish2| |downloads|
-=======
-|BuildStatus| |PyPI| |PythonVersions| |BioConda| |Anaconda| |Publish| |downloads|
->>>>>>> fca01f40f62aa35bfcee649da296c4dd5dc62711
 
 *RiboCode* is a very simple but high-quality computational algorithm to
 identify genome-wide translated ORFs using ribosome-profiling data.
