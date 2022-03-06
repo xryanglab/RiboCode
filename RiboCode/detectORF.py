@@ -6,7 +6,7 @@ from builtins import str, zip, map, range
 # -*- coding:UTF-8 -*-
 __author__ = 'Zhengtao Xiao'
 
-from .test_func import wilcoxon_greater,combine_pvals,cor_mat,pvals_adjust
+from .test_func import wilcoxon_greater,combine_pvals,cor_mat,pvals_adjust,cal_dependence
 from .prepare_transcripts import *
 from .translate_dna import translation
 from .orf_finder import orf_finder
@@ -149,13 +149,13 @@ def ORF_record(only_ATG=True):
 	        "ORF_length","ORF_tstart","ORF_tstop","ORF_gstart","ORF_gstop","annotated_tstart","annotated_tstop",
 	        "annotated_gstart","annotated_gstop","Psites_sum_frame0","Psites_sum_frame1","Psites_sum_frame2",
 	        "Psites_coverage_frame0","Psites_coverage_frame1","Psites_coverage_frame2","Psites_frame0_RPKM",
-	        "pval_frame0_vs_frame1","pval_frame0_vs_frame2","pval_combined","adjusted_pval","AAseq","orf_iv"]
+	        "pval_frame0_vs_frame1","pval_frame0_vs_frame2","dependence_frame1_frame2","pval_combined","adjusted_pval","AAseq","orf_iv"]
 	if only_ATG is False:
 		keys.insert(9,"start_codon")
 	r = OrderedDict(zip(keys,[None]*len(keys)))
 	return r
 
-def write_result(orf_results,outname,report_alt_ORF_type=False,report_adjusted_pval=False):
+def write_result(orf_results,outname,report_alt_ORF_type=False,report_adjusted_pval=False,report_dependence=False):
 
 	header = list(orf_results[0].keys())[:-1]
 	if not report_alt_ORF_type:
@@ -164,6 +164,9 @@ def write_result(orf_results,outname,report_alt_ORF_type=False,report_adjusted_p
 	if not report_adjusted_pval:
 		adjusted_pval_idx = header.index("adjusted_pval")
 		header.pop(adjusted_pval_idx)
+	if not report_dependence:
+		dependence_idx = header.index("dependence_frame1_frame2")
+		header.pop(dependence_idx)
 
 	with open(outname + '.txt',"w") as fout:
 		fout.write("\t".join(header) + "\n")
@@ -172,7 +175,9 @@ def write_result(orf_results,outname,report_alt_ORF_type=False,report_adjusted_p
 			if not report_alt_ORF_type:
 				tmp_out_list.pop(alt_ORF_type_idx)
 			if not report_adjusted_pval:
-				tmp_out_list.pop(adjusted_pval_idx)		
+				tmp_out_list.pop(adjusted_pval_idx)
+			if not report_dependence:
+				tmp_out_list.pop(dependence_idx)	
 			fout.write("\t".join(map(str,tmp_out_list)) + "\n")
 
 def write_to_gtf(gene_dict, transcript_dict, orf_results, collapsed_orf_idx, outname):
@@ -296,7 +301,7 @@ def write_to_bed(gene_dict, transcript_dict, orf_results, collapsed_orf_idx, out
 
 def main(gene_dict, transcript_dict, annot_dir, tpsites_sum, total_psites_number, pval_cutoff, only_longest_orf,
 		START_CODON, ALTERNATIVE_START_CODON_LIST, STOP_CODON_LIST, MIN_AA_LENGTH, outname, output_gtf, output_bed,
-		stouffer_adj, pval_adj):
+		dependence_test, stouffer_adj, pval_adj):
 
 	PSITE_SUM_CUTOFF = F0_NONZEROS = 5
 	transcript_seq = GenomeSeq(os.path.join(annot_dir,"transcripts_sequence.fa"))
@@ -378,6 +383,8 @@ def main(gene_dict, transcript_dict, annot_dir, tpsites_sum, total_psites_number
 				orf_dict["Psites_coverage_frame2"] = percentage_format(cal_coverage(f2))
 				orf_dict["pval_frame0_vs_frame1"] = pv1.pvalue
 				orf_dict["pval_frame0_vs_frame2"] = pv2.pvalue
+				if dependence_test:
+					orf_dict["dependence_frame1_frame2"] = cal_dependence(f1,f2,dependence_test)
 				orf_dict["pval_combined"] = pv
 				orf_dict["Psites_frame0_RPKM"] = cal_RPKM(orf_dict["Psites_sum_frame0"],orf_iv.length,total_psites_number)
 				orf_seq = transcript_seq.get_seq(tobj.transcript_id,orf_iv.start,orf_iv.end,"+")
@@ -410,7 +417,7 @@ def main(gene_dict, transcript_dict, annot_dir, tpsites_sum, total_psites_number
 		ccds_tids = []
 
 		if only_ccds:
-			# only CCDS transcript or all transcript.
+			# only CCDS transcripts.
 			for tid in gobj.transcripts:
 				if "CCDS" in transcript_dict[tid].attr.get("tag",[]):
 					ccds_tids.append(tid)
@@ -462,7 +469,7 @@ def main(gene_dict, transcript_dict, annot_dir, tpsites_sum, total_psites_number
 	orf_padjs = pvals_adjust(orf_comPvs,method=pval_adj)
 	for i in range(len(orf_collapsed_results)):
 		orf_collapsed_results[i]["adjusted_pval"] = orf_padjs[i]
-	write_result(orf_collapsed_results,outname + "_collapsed",report_alt_ORF_type=True,report_adjusted_pval=True)
+	write_result(orf_collapsed_results,outname + "_collapsed",report_alt_ORF_type=True,report_adjusted_pval=True,report_dependence=dependence_test)
 
 	ORFs_category_dict2 = OrderedDict()
 	for k in ORFs_category_dict.keys():

@@ -127,7 +127,7 @@ setup(
 
     # https://packaging.python.org/en/latest/requirements.html
 
-    install_requires=['pysam>0.8.4','matplotlib','numpy','scipy','pyfasta','biopython','h5py>3.0.0','htseq','future','statsmodels'],
+    install_requires=['pysam>0.8.4','matplotlib','numpy','scipy','pyfasta','biopython','h5py>3.0.0','htseq','future','statsmodels','minepy'],
 
     package_data = {
         'config_file': ['data/config.txt'],

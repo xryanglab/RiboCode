@@ -9,7 +9,7 @@ import numpy as np
 from scipy import stats
 from scipy.stats import find_repeats,distributions,ttest_1samp
 from statsmodels.stats import multitest
-
+from minepy import MINE
 
 WilcoxonResult = namedtuple('WilcoxonResult', ('statistic', 'pvalue'))
 def wilcoxon_greater(x, y, zero_method ="wilcox", correction = False):
@@ -170,4 +170,10 @@ def combine_pvals(pvalues, method="stouffer", adjust="none", R="none"):
 def pvals_adjust(comb_pvs,method="bonferroni"):
 	return multitest.multipletests(comb_pvs,method=method)[1]
 
-	
+def cal_dependence(x,y,method="mic"):
+	if method == "mic":
+		mine = MINE()
+		mine.compute_score(x,y)
+		return mine.mic()
+	elif method == "pcc":
+		return np.corrcoef(x,y)[0,1]

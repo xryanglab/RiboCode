@@ -142,9 +142,14 @@ def parsing_ribo():
 						[please refer: https://www.ncbi.nlm.nih.gov/Taxonomy/Utils/wprintgc.cgi]")
 	parser.add_argument("-m","--min-AA-length",dest="min_AA_length",default="5",required=False,
 						help="The minimal length of predicted peptides,default 5", type=int)
+	parser.add_argument("--dependence_test", dest="dependence_test", required=False, type=str, default="none",
+						choices=["none", "mic", "pcc"],
+						help="the method for measuring the dependence between frame1 and frame2. \n \
+							This test could help determine whether the combined p-values should be ajusted to account for the dependence between two test (i.e. F0 vs F1 and F0 vs F2). \n \
+							mic: Maximal Information Coefficient; pcc: Pearson Correlation Coefficient.")
 	parser.add_argument("--stouffer_adj", dest="stouffer_adj", required=False, type=str, default="none",
 						choices=["none","nyholt", "liji", "gao", "galwey"],
-						help="the method for adjustment the cominbed p-values to account for the dependence between two tests. \n \
+						help="the method for adjustment the cominbed p-values to account for the dependence between two tests (i.e. F0 vs F1 and F0 vs F2). \n \
 							see details at: https://search.r-project.org/CRAN/refmans/poolr/html/stouffer.html")
 	parser.add_argument("-p","--pval-cutoff",dest="pval_cutoff",default=0.05,required=False,
 						help="P-value cutoff for ORF filtering, default 0.05", type=float)
@@ -189,8 +194,8 @@ def parsing_plot_orf_density():
 						help="output file name,default is transcriptid_tstart_tstop.pdf")
 	parser.add_argument("--start-codon",dest="StartCodon",required=True,type=str,
 						help="start codon of predicted ORFs")
-	parser.add_argument("--plot-annotated-orf",dest="PlotAnnotatedORF",required=True,type=str,default="yes",
-						help="plot the annotated orf or not.")
+	parser.add_argument("--plot-annotated-orf",dest="PlotAnnotatedORF",required=False,type=str,default="yes",
+						help="plot the annotated orf (yes) or not (no).")
 	parser.add_argument('-V',"--version",action="version",version=__version__)
 	args = parser.parse_args()
 

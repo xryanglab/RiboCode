@@ -2,7 +2,7 @@
 Detect translated ORFs using ribosome-profiling data
 ====================================================
 
-|BuildStatus| |PyPI| |PythonVersions| |BioConda| |Publish| |downloads|
+|BuildStatus| |PyPI| |PythonVersions| |BioConda| |Publish1| |Publish2| |downloads|
 
 *RiboCode* is a very simple but high-quality computational algorithm to
 identify genome-wide translated ORFs using ribosome-profiling data.
@@ -27,6 +27,8 @@ Dependencies:
 - matplotlib
 
 - HTSeq
+
+- minepy
 
 Installation
 ------------
@@ -346,8 +348,11 @@ Xuerui Yang (yangxuerui[at]tsinghua.edu.cn); Zhengtao Xiao (zhengtao.xiao[at]xjt
 .. |downloads| image:: https://anaconda.org/bioconda/ribocode/badges/downloads.svg
    :target: https://anaconda.org/bioconda/ribocode
 
-.. |Publish| image:: https://img.shields.io/badge/publish-NAR-blue.svg?style=flat-square
+.. |Publish1| image:: https://img.shields.io/badge/publish-NAR-blue.svg?style=flat-square
    :target: https://doi.org/10.1093/nar/gky179
+
+.. |Publish2| image:: https://img.shields.io/badge/publish-JOVE-brightgreen.svg?style=flat-square
+   :target: https://dx.doi.org/10.3791/63366   
 
 .. |BuildStatus| image:: https://circleci.com/gh/xryanglab/RiboCode.svg?style=svg
     :target: https://circleci.com/gh/xryanglab/RiboCode
