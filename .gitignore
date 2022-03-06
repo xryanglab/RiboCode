@@ -6,3 +6,4 @@ RiboCode/*.pyc
 .idea/
 ._.DS_Store
 .DS_Store
+*.pyc

@@ -6,7 +6,7 @@ from builtins import str, zip, map, range
 # -*- coding:UTF-8 -*-
 __author__ = 'Zhengtao Xiao'
 
-from .test_func import wilcoxon_greater,combine_pvals
+from .test_func import wilcoxon_greater,combine_pvals,cor_mat,pvals_adjust,cal_dependence
 from .prepare_transcripts import *
 from .translate_dna import translation
 from .orf_finder import orf_finder
@@ -32,14 +32,18 @@ def extract_frame(orf_psite_array):
 		f2 = orf_psite_array[2:orf_psite_array.size:3]
 	return f0,f1,f2
 
-def test_frame(f0, f1, f2):
+def test_frame(f0, f1, f2,stouffer_adj="none"):
 	"""
 	data if f0>f1, f0>f2
 	"""
 
 	pv1 = wilcoxon_greater(f0, f1)
 	pv2 = wilcoxon_greater(f0, f2)
-	pv = combine_pvals(np.array([pv1.pvalue, pv2.pvalue]))
+	if stouffer_adj != "none":
+		R = cor_mat(f1,f2)
+	else:
+		R = "none"
+	pv = combine_pvals(np.array([pv1.pvalue, pv2.pvalue]), method="stouffer", adjust=stouffer_adj, R=R)
 	return pv1,pv2,pv
 
 def percentage_format(value,decimal=2):
@@ -82,7 +86,7 @@ def classfy_orf(orfiv, cdsiv):
 			orftype = "internal"
 	return orftype
 
-def start_check(commonstop_dict, only_longest_orf, tpsites, pval_cutoff):
+def start_check(commonstop_dict, only_longest_orf, tpsites, pval_cutoff, stouffer_adj):
 	"""
 	automatically determine the start codon
 	"""
@@ -108,7 +112,7 @@ def start_check(commonstop_dict, only_longest_orf, tpsites, pval_cutoff):
 			if f0_downstream.max() == 0:
 				continue
 			if np.flatnonzero(f0_downstream).size >= 10:
-				pv1,pv2,pv = test_frame(f0_downstream,f1_downstream,f2_downstream)
+				pv1,pv2,pv = test_frame(f0_downstream,f1_downstream,f2_downstream,stouffer_adj)
 				if pv < pval_cutoff:
 					start = cur_start
 					break
@@ -141,23 +145,40 @@ def start_check(commonstop_dict, only_longest_orf, tpsites, pval_cutoff):
 	return candicate_orf_list
 
 def ORF_record(only_ATG=True):
-	keys = ["ORF_ID","ORF_type","transcript_id","transcript_type","gene_id","gene_name","gene_type","chrom","strand",
+	keys = ["ORF_ID","ORF_type","alt_ORF_type","transcript_id","transcript_type","gene_id","gene_name","gene_type","chrom","strand",
 	        "ORF_length","ORF_tstart","ORF_tstop","ORF_gstart","ORF_gstop","annotated_tstart","annotated_tstop",
 	        "annotated_gstart","annotated_gstop","Psites_sum_frame0","Psites_sum_frame1","Psites_sum_frame2",
 	        "Psites_coverage_frame0","Psites_coverage_frame1","Psites_coverage_frame2","Psites_frame0_RPKM",
-	        "pval_frame0_vs_frame1","pval_frame0_vs_frame2","pval_combined","AAseq","orf_iv"]
+	        "pval_frame0_vs_frame1","pval_frame0_vs_frame2","dependence_frame1_frame2","pval_combined","adjusted_pval","AAseq","orf_iv"]
 	if only_ATG is False:
 		keys.insert(9,"start_codon")
 	r = OrderedDict(zip(keys,[None]*len(keys)))
 	return r
 
-def write_result(orf_results,outname):
+def write_result(orf_results,outname,report_alt_ORF_type=False,report_adjusted_pval=False,report_dependence=False):
 
-	header = "\t".join(list(orf_results[0].keys())[:-1])
+	header = list(orf_results[0].keys())[:-1]
+	if not report_alt_ORF_type:
+		alt_ORF_type_idx = header.index("alt_ORF_type")
+		header.pop(alt_ORF_type_idx)
+	if not report_adjusted_pval:
+		adjusted_pval_idx = header.index("adjusted_pval")
+		header.pop(adjusted_pval_idx)
+	if not report_dependence:
+		dependence_idx = header.index("dependence_frame1_frame2")
+		header.pop(dependence_idx)
+
 	with open(outname + '.txt',"w") as fout:
-		fout.write(header + "\n")
+		fout.write("\t".join(header) + "\n")
 		for v in orf_results:
-			fout.write("\t".join(map(str,list(v.values())[:-1])) + "\n")
+			tmp_out_list = list(v.values())[:-1]
+			if not report_alt_ORF_type:
+				tmp_out_list.pop(alt_ORF_type_idx)
+			if not report_adjusted_pval:
+				tmp_out_list.pop(adjusted_pval_idx)
+			if not report_dependence:
+				tmp_out_list.pop(dependence_idx)	
+			fout.write("\t".join(map(str,tmp_out_list)) + "\n")
 
 def write_to_gtf(gene_dict, transcript_dict, orf_results, collapsed_orf_idx, outname):
 	"""
@@ -279,7 +300,8 @@ def write_to_bed(gene_dict, transcript_dict, orf_results, collapsed_orf_idx, out
 					fout2.write("\t".join(map(str,tmp)) + "\n")
 
 def main(gene_dict, transcript_dict, annot_dir, tpsites_sum, total_psites_number, pval_cutoff, only_longest_orf,
-         START_CODON, ALTERNATIVE_START_CODON_LIST, STOP_CODON_LIST, MIN_AA_LENGTH, outname, output_gtf, output_bed):
+		START_CODON, ALTERNATIVE_START_CODON_LIST, STOP_CODON_LIST, MIN_AA_LENGTH, outname, output_gtf, output_bed,
+		dependence_test, stouffer_adj, pval_adj):
 
 	PSITE_SUM_CUTOFF = F0_NONZEROS = 5
 	transcript_seq = GenomeSeq(os.path.join(annot_dir,"transcripts_sequence.fa"))
@@ -308,7 +330,7 @@ def main(gene_dict, transcript_dict, annot_dir, tpsites_sum, total_psites_number
 
 		tseq = transcript_seq.get_seq(tobj.transcript_id)
 		commonstop_dict = orf_finder(tseq,START_CODON,ALTERNATIVE_START_CODON_LIST,STOP_CODON_LIST,MIN_AA_LENGTH)
-		candicate_orfivs = start_check(commonstop_dict, only_longest_orf, tpsites, pval_cutoff)
+		candicate_orfivs = start_check(commonstop_dict, only_longest_orf, tpsites, pval_cutoff,stouffer_adj)
 		for orf_iv in candicate_orfivs:
 			if orf_iv.length < MIN_AA_LENGTH * 3:
 				continue
@@ -318,7 +340,7 @@ def main(gene_dict, transcript_dict, annot_dir, tpsites_sum, total_psites_number
 				continue
 			if np.flatnonzero(f0).size < F0_NONZEROS:
 				continue
-			pv1,pv2,pv = test_frame(f0,f1,f2)
+			pv1,pv2,pv = test_frame(f0,f1,f2,stouffer_adj=stouffer_adj)
 			if pv <= pval_cutoff:
 				orf_dict = ORF_record(only_ATG)
 				orf_dict["orf_iv"] = orf_iv
@@ -361,6 +383,8 @@ def main(gene_dict, transcript_dict, annot_dir, tpsites_sum, total_psites_number
 				orf_dict["Psites_coverage_frame2"] = percentage_format(cal_coverage(f2))
 				orf_dict["pval_frame0_vs_frame1"] = pv1.pvalue
 				orf_dict["pval_frame0_vs_frame2"] = pv2.pvalue
+				if dependence_test:
+					orf_dict["dependence_frame1_frame2"] = cal_dependence(f1,f2,dependence_test)
 				orf_dict["pval_combined"] = pv
 				orf_dict["Psites_frame0_RPKM"] = cal_RPKM(orf_dict["Psites_sum_frame0"],orf_iv.length,total_psites_number)
 				orf_seq = transcript_seq.get_seq(tobj.transcript_id,orf_iv.start,orf_iv.end,"+")
@@ -380,20 +404,20 @@ def main(gene_dict, transcript_dict, annot_dir, tpsites_sum, total_psites_number
 	#For each stop codon of a gene, the most upstream start is left
 	sys.stdout.write("\n\tWriting the results to file .....\n")
 	write_result(orf_results,outname)
-	fout = open(outname + "_collapsed.txt","w")
-	header = "\t".join(list(orf_results[0].keys())[:-1])
-	fout.write(header + "\n")
 	ORFs_category_dict = OrderedDict()
 	for k in ["annotated","uORF","dORF","Overlapped","novel_PCGs","novel_NonPCGs"]:
 		ORFs_category_dict[k] = set()
 
 	collapsed_orf_idx = set()
+	orf_collapsed_results = []
+	orf_comPvs = []
+
 	for gobj in gene_dict.values():
-		orf_transcript_dict = {} #key is orf_gstop, value is tid,orf_gstart,orf_f0_sum,orf index
+		orf_transcript_dict = {} #key is orf_gstop, value is tid,orf_gstart,orf_f0_sum,orf index, orf type
 		ccds_tids = []
 
 		if only_ccds:
-			# only CCDS transcript or all transcript.
+			# only CCDS transcripts.
 			for tid in gobj.transcripts:
 				if "CCDS" in transcript_dict[tid].attr.get("tag",[]):
 					ccds_tids.append(tid)
@@ -409,23 +433,23 @@ def main(gene_dict, transcript_dict, annot_dir, tpsites_sum, total_psites_number
 				orf = orf_results[i]
 				orf_gstop = orf["ORF_gstop"]
 				orf_gstart = orf["ORF_gstart"]
-
-				if orf_gstop in orf_transcript_dict:
-					if gobj.genomic_iv.strand == "+" and orf_gstart < orf_transcript_dict[orf_gstop][1]:
-						orf_transcript_dict[orf_gstop] = (tid,orf_gstart,orf["Psites_sum_frame0"],i)
-					elif gobj.genomic_iv.strand == "-" and orf_gstart > orf_transcript_dict[orf_gstop][1]:
-						orf_transcript_dict[orf_gstop]= (tid,orf_gstart,orf["Psites_sum_frame0"],i)
-					elif (orf_gstart == orf_transcript_dict[orf_gstop][1]) and \
-							(orf["Psites_sum_frame0"] > orf_transcript_dict[orf_gstop][2]):
-						orf_transcript_dict[orf_gstop]= (tid,orf_gstart,orf["Psites_sum_frame0"],i)
-					else:
-						continue
+				
+				if orf_gstop not in orf_transcript_dict:
+					orf_transcript_dict[orf_gstop] = [tid,orf_gstart,orf["Psites_sum_frame0"],i, set([orf["ORF_type"]])]
 				else:
-					orf_transcript_dict[orf_gstop] = (tid,orf_gstart,orf["Psites_sum_frame0"],i)
+					update_flag = gobj.genomic_iv.strand == "+" and orf_gstart < orf_transcript_dict[orf_gstop][1]
+					update_flag = update_flag or (gobj.genomic_iv.strand == "-" and orf_gstart > orf_transcript_dict[orf_gstop][1])
+					update_flag = update_flag or (orf_gstart == orf_transcript_dict[orf_gstop][1] and orf["Psites_sum_frame0"] > orf_transcript_dict[orf_gstop][2])
 
+					if update_flag:
+						orf_transcript_dict[orf_gstop][0:4] = [tid,orf_gstart,orf["Psites_sum_frame0"],i]
+					
+					orf_transcript_dict[orf_gstop][4].update([orf["ORF_type"]])
+		
 		for v in orf_transcript_dict.values():
-			_,_,_,orf_idx = v
+			_,_,_,orf_idx,all_orf_types = v
 			orf = orf_results[orf_idx]
+			orf["alt_ORF_type"] = ",".join(all_orf_types.difference([orf["ORF_type"]])) or "-"
 			collapsed_orf_idx.add(orf_idx)
 			if orf["ORF_type"] == "annotated":
 				ORFs_category_dict["annotated"].add(gobj.gene_id)
@@ -439,10 +463,14 @@ def main(gene_dict, transcript_dict, annot_dir, tpsites_sum, total_psites_number
 				ORFs_category_dict["novel_PCGs"].add(gobj.gene_id)
 			else:
 				ORFs_category_dict["novel_NonPCGs"].add(gobj.gene_id)
+			orf_collapsed_results.append(orf)
+			orf_comPvs.append(orf["pval_combined"])
 
-			fout.write("\t".join(map(str,list(orf.values())[:-1])) + "\n")
+	orf_padjs = pvals_adjust(orf_comPvs,method=pval_adj)
+	for i in range(len(orf_collapsed_results)):
+		orf_collapsed_results[i]["adjusted_pval"] = orf_padjs[i]
+	write_result(orf_collapsed_results,outname + "_collapsed",report_alt_ORF_type=True,report_adjusted_pval=True,report_dependence=dependence_test)
 
-	fout.close()
 	ORFs_category_dict2 = OrderedDict()
 	for k in ORFs_category_dict.keys():
 		num = len(ORFs_category_dict[k])
