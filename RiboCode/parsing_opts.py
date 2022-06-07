@@ -294,6 +294,19 @@ def parsing_ribo_onestep():
 						[please refer: https://www.ncbi.nlm.nih.gov/Taxonomy/Utils/wprintgc.cgi]")
 	parser.add_argument("-mA","--min-AA-length",dest="min_AA_length",default="20",required=False,
 						help="The minimal length of predicted peptides,default 20", type=int)
+	parser.add_argument("--dependence_test", dest="dependence_test", required=False, type=str, default="none",
+						choices=["none", "mic", "pcc"],
+						help="the method for measuring the dependence between frame1 and frame2. \n \
+							This test could help determine whether the combined p-values should be ajusted to account for the dependence between two test (i.e. F0 vs F1 and F0 vs F2). \n \
+							mic: Maximal Information Coefficient; pcc: Pearson Correlation Coefficient.")
+	parser.add_argument("--stouffer_adj", dest="stouffer_adj", required=False, type=str, default="none",
+						choices=["none","nyholt", "liji", "gao", "galwey"],
+						help="the method for adjustment the cominbed p-values to account for the dependence between two tests (i.e. F0 vs F1 and F0 vs F2). \n \
+							see details at: https://search.r-project.org/CRAN/refmans/poolr/html/stouffer.html")
+	parser.add_argument("--pval_adj", dest="pval_adj", required=False, type=str, default="fdr_bh",
+						choices=["fdr_bh","bonferroni","sidak","holm-sidak","holm","simes-hochberg","hommel","fdr_by","fdr_tsbh","fdr_tsbky"],
+						help="the method used to correct p-values for multiple testing. default: Benjamini/Hochberg method. \n \
+							see details at: https://www.statsmodels.org/devel/generated/statsmodels.stats.multitest.multipletests.html#statsmodels.stats.multitest.multipletests")
 	# parser.add_argument("-P","--parallel_num",dest="parallel_num",default=1,required=False,
 	#					 help="the number of threads to read the alignment file(s), \
 	#					 the optimal value is the number of alignment files, default=1",type=int)
