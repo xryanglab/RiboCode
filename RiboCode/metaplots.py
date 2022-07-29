@@ -45,6 +45,7 @@ def filter_transcript(gene_dict,transcript_dict):
 			# if only transcript level1
 			levels = set([transcript_dict[tid].attr.get("level",None) for tid in gobj.transcripts])
 			if len(levels) > 1:
+				if None in levels: levels.discard(None)
 				level = list(sorted(levels))[0]
 			else:
 				level = list(levels)[0]
