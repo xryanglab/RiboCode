@@ -4,6 +4,10 @@ Changes
 todo in future versions:
 - Supporting for *de novo* GTF file (no annotated start and stop codons).
 
+v1.2.15 (2022.7.29)
+-----------------
+- Fixed a small bug caused by None values in levels ("metaplots.py", level = list(sorted(levels))[0] line 49)
+
 v1.2.14 (2022.1.25)
 -----------------
 - Add "--dependence_test" option for measuring the dependence of densities between frame 1 and frame 2 of each ORF. This test would help determine whether the adjustment should be performed on the combined p-values.
